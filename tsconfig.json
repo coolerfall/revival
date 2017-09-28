@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "allowJs": false,
+    "jsx": "react",
+    "sourceMap": false,
+    "outDir": "lib",
+    "strict": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "experimentalDecorators": true,
+    "declaration": true
+  },
+  "exclude": [
+    "android",
+    "ios",
+    "node_modules",
+    "lib",
+    "__tests__"
+  ]
+}

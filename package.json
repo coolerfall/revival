@@ -1,0 +1,36 @@
+{
+  "name": "revival",
+  "version": "0.1.0",
+  "description": "A RESTful http client for react native and typescript/javascript.",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc --pretty",
+    "test": "mocha -r ts-node/register __tests__/decorator.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coolerfall/revival.git"
+  },
+  "keywords": [
+    "http",
+    "restful",
+    "react-native"
+  ],
+  "author": "Vincent Cheung",
+  "peerDependencies": {
+    "qs": "*",
+    "rxjs": "*"
+  },
+  "devDependencies": {
+    "@types/mocha": "2.2.43",
+    "@types/qs": "6.5.0",
+    "@types/sinon": "2.3.5",
+    "mocha": "3.5.3",
+    "qs": "6.5.0",
+    "rxjs": "5.4.3",
+    "sinon": "3.3.0",
+    "ts-node": "3.3.0",
+    "typescript": "2.5.2"
+  }
+}
