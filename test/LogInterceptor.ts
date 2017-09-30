@@ -2,10 +2,10 @@
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 
-import { Chain } from "../src/Chain";
-import { Interceptor } from "../src/Interceptor";
-import { ReviRequest } from "../src/ReviRequest";
-import { ReviResponse } from "../src/ReviResponse";
+import { Chain } from "../packages/revival/src/Chain";
+import { Interceptor } from "../packages/revival/src/Interceptor";
+import { ReviRequest } from "../packages/revival/src/ReviRequest";
+import { ReviResponse } from "../packages/revival/src/ReviResponse";
 
 export class LogInterceptor implements Interceptor {
   intercept(chain: Chain): ReviResponse {

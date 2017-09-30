@@ -1,0 +1,30 @@
+{
+  "name": "revival-adapter-promise",
+  "description": "An promise call adapter for revival.",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc --pretty"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coolerfall/revival.git"
+  },
+  "keywords": [
+    "http",
+    "restful",
+    "typescript"
+  ],
+  "author": "Vincent Cheung",
+  "license": "MIT",
+  "peerDependencies": {
+    "revival": "*"
+  },
+  "devDependencies": {
+    "@types/qs": "6.5.0",
+    "qs": "6.5.1",
+    "revival": "file:../revival/src",
+    "rxjs": "5.4.3"
+  },
+  "version": "0.1.2"
+}

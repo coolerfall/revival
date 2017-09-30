@@ -2,6 +2,8 @@
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 
+export { Call } from "./Call";
+export { CallAdapter } from "./CallAdapter";
 export { Chain } from "./Chain";
 export { Interceptor } from "./Interceptor";
 export { ReviRequest } from "./ReviRequest";
