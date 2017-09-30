@@ -8,13 +8,12 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
     "experimentalDecorators": true,
-    "declaration": true
   },
   "exclude": [
     "android",
     "ios",
     "node_modules",
     "lib",
-    "__tests__"
+    "test"
   ]
 }

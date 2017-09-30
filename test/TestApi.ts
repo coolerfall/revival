@@ -14,18 +14,18 @@ import {
   Query,
   QueryMap,
   Raw
-} from "../src/http/decorators";
+} from "../packages/revival/src/http/decorators";
 import { Observable } from "rxjs/Observable";
-import { DUMMY } from "../src/dummy";
-import { Revival } from "../src/Revival";
+import { DUMMY } from "../packages/revival/src/dummy";
+import { Revival } from "../packages/revival/src/Revival";
 import { LogInterceptor } from "./LogInterceptor";
-import { RevivalBuilder } from "../src/RevivalBuilder";
-import { RxjsCallAdapter } from "../src/adapter/RxjsCallAdapter";
-import { JsonConverter } from "../src/JsonConverter";
+import { RevivalBuilder } from "../packages/revival/src/RevivalBuilder";
+import { RxjsCallAdapter } from "../packages/revival-adapter-rxjs/src/RxjsCallAdapter";
+import { JsonConverter } from "../packages/revival/src/JsonConverter";
 
 let revival: Revival = new RevivalBuilder()
   .baseUrl("http://test.com/")
-  .callAdapter(new RxjsCallAdapter())
+  .callAdapter(RxjsCallAdapter.create())
   .converter(new JsonConverter())
   .addInterceptor(new LogInterceptor())
   .build();
