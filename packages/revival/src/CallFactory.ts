@@ -5,5 +5,5 @@ import { ReviRequest } from "./ReviRequest";
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 export interface CallFactory {
-  newCall(request: ReviRequest): Call;
+  newCall(request: ReviRequest): Call<any>;
 }

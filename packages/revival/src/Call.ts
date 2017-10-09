@@ -1,12 +1,14 @@
-import { Callback } from "./Callback";
 import { ReviResponse } from "./ReviResponse";
 import { ReviRequest } from "./ReviRequest";
 
 /**
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
-export interface Call {
+export interface Call<T> {
   request(): ReviRequest;
   execute(): ReviResponse;
-  enqueue(callback: Callback): void;
+  enqueue(
+    onResponse?: (response: ReviResponse) => void,
+    onFailure?: () => void
+  ): void;
 }

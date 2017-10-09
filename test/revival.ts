@@ -5,6 +5,7 @@
 import { default as TestApi } from "./TestApi";
 import * as Sinon from "sinon";
 import { SinonFakeServer } from "sinon";
+import { assert } from "chai";
 
 class FormData {
   append(): void {}
@@ -36,9 +37,9 @@ describe("Revival", () => {
   it("Post", () => {
     TestApi.testPost({ kit: 11 }).subscribe(
       s => {
-        console.log(">>>>>>>>>>>>>>>>>ssssss", s);
+        assert.deepEqual(s, { id: 12, name: "Revival" });
       },
-      e => console.log(">>>>@!#@#eerr", e)
+      e => console.log("error: ", e)
     );
   });
   it("MultiPart", () => {

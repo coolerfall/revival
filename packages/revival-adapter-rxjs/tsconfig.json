@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "es6",
     "allowJs": false,
-    "jsx": "react",
     "sourceMap": false,
     "outDir": "lib",
     "strict": true,
