@@ -1,17 +1,18 @@
 import { Call } from "./Call";
+import { Chain } from "./Chain";
 import { ReviRequest } from "./ReviRequest";
 import { ReviResponse } from "./ReviResponse";
-import { Callback } from "./Callback";
-import { XHRClient } from "./XHRClient";
+import { RevivalCallFactory } from "./RevivalCallFactory";
 import { RealInterceptorChain } from "./RealInterceptorChain";
-import { Chain } from "./Chain";
+import { Interceptor } from "./Interceptor";
+import { CallServerInterceptor } from "./CallServerInterceptor";
 
 /**
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
-export class RealCall implements Call {
+export class RealCall implements Call<any> {
   constructor(
-    private readonly client: XHRClient,
+    private readonly factory: RevivalCallFactory,
     private readonly originRequest: ReviRequest
   ) {}
 
@@ -23,16 +24,45 @@ export class RealCall implements Call {
     return this.getResponseWithInterceptors();
   }
 
-  enqueue(callback: Callback): void {
-    throw new Error("Method not implemented.");
+  enqueue(
+    onResponse: (response: ReviResponse) => void,
+    onFailure: () => void
+  ): void {
+    new AsyncCall(
+      this.getResponseWithInterceptors,
+      onResponse,
+      onFailure
+    ).execute();
   }
 
-  getResponseWithInterceptors(): ReviResponse {
+  private getResponseWithInterceptors(): ReviResponse {
+    let interceptors: Array<Interceptor> = [];
+    interceptors.push(...this.factory.interceptors);
+    interceptors.push(new CallServerInterceptor(this.factory.client));
+
     let chain: Chain = new RealInterceptorChain(
-      this.client.interceptors,
+      interceptors,
       0,
       this.originRequest
     );
     return chain.proceed(this.originRequest);
+  }
+}
+
+class AsyncCall {
+  constructor(
+    private readonly getResponseWithInterceptors: () => ReviResponse,
+    private readonly onResponse?: (response: ReviResponse) => void,
+    private readonly onFailure?: () => void
+  ) {}
+  execute(): void {
+    setTimeout(() => {
+      try {
+        let response: ReviResponse = this.getResponseWithInterceptors();
+        this.onResponse && this.onResponse(response);
+      } catch (e) {
+        this.onFailure && this.onFailure();
+      }
+    }, 0);
   }
 }

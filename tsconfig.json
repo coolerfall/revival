@@ -2,9 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "allowJs": false,
-    "jsx": "react",
     "sourceMap": false,
-    "outDir": "lib",
     "strict": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -15,6 +13,6 @@
     "android",
     "ios",
     "node_modules",
-    "lib"
+    "packages"
   ]
 }

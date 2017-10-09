@@ -1,5 +1,5 @@
-import { ReviRequest } from "./ReviRequest";
 import { Method } from "./Method";
+import { ReviRequest } from "./ReviRequest";
 import * as qs from "qs";
 
 /**

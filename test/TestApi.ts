@@ -21,12 +21,10 @@ import { Revival } from "../packages/revival/src/Revival";
 import { LogInterceptor } from "./LogInterceptor";
 import { RevivalBuilder } from "../packages/revival/src/RevivalBuilder";
 import { RxjsCallAdapter } from "../packages/revival-adapter-rxjs/src/RxjsCallAdapter";
-import { JsonConverter } from "../packages/revival/src/JsonConverter";
 
 let revival: Revival = new RevivalBuilder()
   .baseUrl("http://test.com/")
   .callAdapter(RxjsCallAdapter.create())
-  .converter(new JsonConverter())
   .addInterceptor(new LogInterceptor())
   .build();
 

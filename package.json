@@ -18,9 +18,11 @@
   "author": "Vincent Cheung",
   "license": "MIT",
   "devDependencies": {
+    "@types/chai": "4.0.4",
     "@types/mocha": "2.2.43",
     "@types/qs": "6.5.0",
     "@types/sinon": "2.3.5",
+    "chai": "4.1.2",
     "lerna": "2.2.0",
     "mocha": "3.5.3",
     "qs": "6.5.0",

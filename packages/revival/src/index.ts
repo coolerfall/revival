@@ -5,6 +5,7 @@
 export { Call } from "./Call";
 export { CallAdapter } from "./CallAdapter";
 export { Chain } from "./Chain";
+export { Client } from "./Client";
 export { Interceptor } from "./Interceptor";
 export { ReviRequest } from "./ReviRequest";
 export { Revival } from "./Revival";

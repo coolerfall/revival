@@ -1,5 +1,6 @@
 {
   "name": "revival",
+  "version": "0.1.2",
   "description": "A RESTful http client for react native and typecript.",
   "main": "index.js",
   "typings": "lib/index.d.ts",
@@ -31,6 +32,5 @@
     "sinon": "3.3.0",
     "ts-node": "3.3.0",
     "typescript": "2.5.2"
-  },
-  "version": "0.1.2"
+  }
 }

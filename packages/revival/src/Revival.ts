@@ -1,21 +1,21 @@
-import { Interceptor } from "./Interceptor";
-import { CallServerInterceptor } from "./CallServerInterceptor";
-import { ReviRequest } from "./ReviRequest";
-import { XHRClient } from "./XHRClient";
 import { CallAdapter } from "./CallAdapter";
-import { XHRCall } from "./XHRCall";
+import { Client } from "./Client";
 import { Converter } from "./Converter";
+import { Interceptor } from "./Interceptor";
+import { ReviRequest } from "./ReviRequest";
+import { XHRCall } from "./XHRCall";
+import { RevivalCallFactory } from "./RevivalCallFactory";
 
 /**
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 export class Revival {
-  private baseUrl: string;
-  private interceptors: Array<Interceptor> = [];
+  private revivalCallFactory: RevivalCallFactory;
 
   constructor(
-    baseUrl: string,
-    private readonly callAdapter: CallAdapter,
+    private readonly baseUrl: string,
+    private readonly client: Client,
+    private readonly callAdapter: CallAdapter<any>,
     private readonly converter: Converter,
     interceptors?: Array<Interceptor>
   ) {
@@ -27,10 +27,7 @@ export class Revival {
       throw new Error(`Base url must end with '/'.`);
     }
 
-    this.baseUrl = baseUrl;
-    if (interceptors) {
-      this.interceptors.push(...interceptors);
-    }
+    this.revivalCallFactory = new RevivalCallFactory(client, interceptors);
   }
 
   create<T>(apiClazz: { new (): T }): T {
@@ -44,19 +41,14 @@ export class Revival {
     return `${this.baseUrl}${path}`;
   }
 
-  call(originRequest: ReviRequest, isRaw: boolean): any {
-    let interceptors: Array<Interceptor> = [];
-    interceptors.push(...this.interceptors);
-    interceptors.push(new CallServerInterceptor());
-
-    let xhrClient: XHRClient = new XHRClient(interceptors);
-    let xhrCall: XHRCall = new XHRCall(
+  call<T>(originRequest: ReviRequest, isRaw: boolean): any {
+    let xhrCall: XHRCall<T> = new XHRCall(
       originRequest,
-      xhrClient,
+      this.revivalCallFactory,
       this.converter,
       isRaw
     );
 
-    return this.callAdapter.adapt(xhrCall);
+    return this.callAdapter.adapt(xhrCall, isRaw);
   }
 }

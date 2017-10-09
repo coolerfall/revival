@@ -1,14 +1,14 @@
 import { Call } from "./Call";
-import { ReviRequest } from "./ReviRequest";
-import { ReviResponse } from "./ReviResponse";
-import { Callback } from "./Callback";
 import { CallFactory } from "./CallFactory";
 import { Converter } from "./Converter";
+import { ReviRequest } from "./ReviRequest";
+import { ReviResponse } from "./ReviResponse";
 
 /**
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
-export class XHRCall implements Call {
+export class XHRCall<T> implements Call<T> {
+
   constructor(
     private readonly originRequest: ReviRequest,
     private readonly factory: CallFactory,
@@ -24,11 +24,22 @@ export class XHRCall implements Call {
     let response: ReviResponse = this.factory
       .newCall(this.originRequest)
       .execute();
-
     return this.isRaw ? response : this.converter.convert(response);
   }
 
-  enqueue(callback: Callback): void {
-    throw new Error("Method not implemented.");
+  enqueue(
+    onResponse?: (response: ReviResponse) => void,
+    onFailure?: () => void
+  ): void {
+    this.factory
+      .newCall(this.originRequest)
+      .enqueue(
+        response =>
+          onResponse &&
+          onResponse(
+            this.isRaw ? response : this.converter.convert(response).body
+          ),
+        onFailure
+      );
   }
 }
