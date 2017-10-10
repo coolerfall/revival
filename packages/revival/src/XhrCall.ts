@@ -1,5 +1,4 @@
-import { Call } from "./Call";
-import { CallFactory } from "./CallFactory";
+import { Call, CallFactory } from "./call";
 import { Converter } from "./Converter";
 import { ReviRequest } from "./ReviRequest";
 import { ReviResponse } from "./ReviResponse";
@@ -7,8 +6,7 @@ import { ReviResponse } from "./ReviResponse";
 /**
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
-export class XHRCall<T> implements Call<T> {
-
+export class XhrCall<T> implements Call<T> {
   constructor(
     private readonly originRequest: ReviRequest,
     private readonly factory: CallFactory,

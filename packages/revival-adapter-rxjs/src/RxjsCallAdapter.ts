@@ -1,6 +1,5 @@
-import { Call, CallAdapter } from "revival";
+import { Call, CallAdapter, ReviResponse } from "revival";
 import { Observable } from "rxjs";
-import { ReviResponse } from "../../revival/src/ReviResponse";
 
 /**
  * @author Vincent Cheung (coolingfall@gmail.com)

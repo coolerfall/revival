@@ -1,5 +1,4 @@
-import { Call, CallAdapter } from "revival";
-import { ReviResponse } from "../../revival/src/ReviResponse";
+import { Call, CallAdapter, ReviResponse } from "revival";
 
 /**
  * @author Vincent Cheung (coolingfall@gmail.com)

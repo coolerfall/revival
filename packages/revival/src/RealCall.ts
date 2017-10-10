@@ -1,19 +1,17 @@
 import { Call } from "./Call";
-import { Chain } from "./Chain";
+import { CallServerInterceptor } from "./CallServerInterceptor";
+import { Chain, Interceptor } from "./Interceptor";
 import { ReviRequest } from "./ReviRequest";
 import { ReviResponse } from "./ReviResponse";
-import { RevivalCallFactory } from "./RevivalCallFactory";
 import { RealInterceptorChain } from "./RealInterceptorChain";
-import { Interceptor } from "./Interceptor";
-import { CallServerInterceptor } from "./CallServerInterceptor";
 
 /**
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 export class RealCall implements Call<any> {
   constructor(
-    private readonly factory: RevivalCallFactory,
-    private readonly originRequest: ReviRequest
+    private readonly originRequest: ReviRequest,
+    private readonly interceptors: Array<Interceptor>
   ) {}
 
   request(): ReviRequest {
@@ -37,8 +35,8 @@ export class RealCall implements Call<any> {
 
   private getResponseWithInterceptors(): ReviResponse {
     let interceptors: Array<Interceptor> = [];
-    interceptors.push(...this.factory.interceptors);
-    interceptors.push(new CallServerInterceptor(this.factory.client));
+    interceptors.push(...this.interceptors);
+    interceptors.push(new CallServerInterceptor());
 
     let chain: Chain = new RealInterceptorChain(
       interceptors,

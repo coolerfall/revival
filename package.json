@@ -4,7 +4,7 @@
   "scripts": {
     "build": "rm -rf packages/*/lib && lerna exec -- npm run build",
     "publish": "npm run build && lerna publish --skip-git",
-    "test": "mocha -r ts-node/register test/revival.ts"
+    "test": "mocha -r ts-node/register test/revival.test.ts"
   },
   "repository": {
     "type": "git",
@@ -13,6 +13,7 @@
   "keywords": [
     "http",
     "restful",
+    "xhr",
     "typescript"
   ],
   "author": "Vincent Cheung",

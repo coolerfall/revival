@@ -2,14 +2,12 @@
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 
-export { Call } from "./Call";
+export { Call, CallFactory } from "./call";
 export { CallAdapter } from "./CallAdapter";
-export { Chain } from "./Chain";
-export { Client } from "./Client";
-export { Interceptor } from "./Interceptor";
+export { Chain, Interceptor } from "./Interceptor";
 export { ReviRequest } from "./ReviRequest";
-export { Revival } from "./Revival";
-export { RevivalBuilder } from "./RevivalBuilder";
+export { ReviResponse } from "./ReviResponse";
+export { Revival, RevivalBuilder } from "./revival";
 export {
   GET,
   POST,

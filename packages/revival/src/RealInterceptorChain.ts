@@ -1,5 +1,4 @@
-import { Chain } from "./Chain";
-import { Interceptor } from "./Interceptor";
+import { Chain, Interceptor } from "./Interceptor";
 import { ReviRequest } from "./ReviRequest";
 import { ReviResponse } from "./ReviResponse";
 import { DUMMY } from "./dummy";
