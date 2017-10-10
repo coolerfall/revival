@@ -5,7 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/**
- * A dummy used as a return value in api with decorators.
- */
-export const DUMMY: any = function() {};
+export interface ReviResponse {
+  body: any;
+  headers: object;
+}
+
+export class HttpError {
+
+}

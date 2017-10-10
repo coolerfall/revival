@@ -1,11 +1,33 @@
-import { Method } from "./Method";
-import { ReviRequest } from "./ReviRequest";
+/**
+ * Copyright (C) 2017-present Vincent Cheung
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import * as qs from "qs";
 
 /**
+ * All supported http method in revival.
+ */
+export enum Method {
+  GET = "GET",
+  HEAD = "HEAD",
+  DELETE = "DELETE",
+  POST = "POST",
+  PUT = "PUT",
+  PATCH = "PATCH"
+}
+
+export interface ReviRequest {
+  url: string;
+  method: Method;
+  headers?: object;
+  params?: any;
+}
+
+/**
  * A builder to build {@link ReviRequest} to make a request.
- *
- * @author Vincent Cheung (coolingfall@gmail.com)
  */
 export class RequestBuilder {
   private isQuery: boolean;
@@ -18,6 +40,7 @@ export class RequestBuilder {
     private readonly method: Method,
     private readonly isMultiPart: boolean,
     private readonly isFormUrlEncoded: boolean,
+    private readonly returnRaw: boolean,
     private readonly args: Array<any>
   ) {
     this.isQuery =
@@ -33,9 +56,12 @@ export class RequestBuilder {
   }
 
   addHeader(headerArray: Array<object>, headers: object): void {
-    this.headers = {
-      Accept: "application/json"
-    };
+    this.headers = {};
+    if (!this.returnRaw) {
+      Object.assign(this.headers, {
+        Accept: "application/json"
+      });
+    }
     if (this.contentType) {
       Object.assign(this.headers, { "Content-Type": this.contentType });
     }

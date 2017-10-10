@@ -5,7 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/**
- * A dummy used as a return value in api with decorators.
- */
-export const DUMMY: any = function() {};
+export function checkNotNull<T>(value: T, message: string): T {
+  if (!value) {
+    throw Error(message);
+  }
+
+  return value;
+}

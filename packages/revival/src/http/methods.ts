@@ -1,10 +1,12 @@
 /**
- * @author Vincent Cheung (coolingfall@gmail.com)
+ * Copyright (C) 2017-present Vincent Cheung
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
-import { Method } from "../Method";
 import { Revival } from "../revival";
-import { RequestBuilder } from "../RequestBuilder";
+import { RequestBuilder, Method } from "../request";
 
 export function methodDecorator(method: Method, path: string) {
   return function(
@@ -20,11 +22,13 @@ export function methodDecorator(method: Method, path: string) {
 
       let isMultiPart: boolean = target[`${propertyKey}_MultiPart`];
       let isFormUrlEncoded: boolean = target[`${propertyKey}_FormUrlEncoded`];
+      let returnRaw: boolean = target[`${propertyKey}_Return_Raw`];
       let builder: RequestBuilder = new RequestBuilder(
         revival.fullUrl(path),
         method,
         isMultiPart,
         isFormUrlEncoded,
+        returnRaw,
         args
       );
 
@@ -44,7 +48,7 @@ export function methodDecorator(method: Method, path: string) {
       builder.addBody(bodyArray);
       builder.addPart(partArray);
 
-      return revival.call(builder.build(), target[`${propertyKey}_Return_Raw`]);
+      return revival.call(builder.build(), returnRaw);
     };
 
     return descriptor;
