@@ -17,9 +17,8 @@ import {
 } from "../packages/revival/src/http/decorators";
 import { Observable } from "rxjs/Observable";
 import { DUMMY } from "../packages/revival/src/dummy";
-import { Revival } from "../packages/revival/src/Revival";
+import { Revival, RevivalBuilder } from "../packages/revival/src/revival";
 import { LogInterceptor } from "./LogInterceptor";
-import { RevivalBuilder } from "../packages/revival/src/RevivalBuilder";
 import { RxjsCallAdapter } from "../packages/revival-adapter-rxjs/src/RxjsCallAdapter";
 
 let revival: Revival = new RevivalBuilder()

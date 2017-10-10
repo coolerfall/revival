@@ -3,7 +3,7 @@
  */
 
 import { Method } from "../Method";
-import { Revival } from "../Revival";
+import { Revival } from "../revival";
 import { RequestBuilder } from "../RequestBuilder";
 
 export function methodDecorator(method: Method, path: string) {
