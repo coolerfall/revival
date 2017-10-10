@@ -1,8 +1,11 @@
 /**
- * @author Vincent Cheung (coolingfall@gmail.com)
+ * Copyright (C) 2017-present Vincent Cheung
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
-import { Method } from "../Method";
+import { Method } from "../request";
 import { parameterDecorator, parameterEmptyDecorator } from "./parameters";
 import { methodDecorator } from "./methods";
 
@@ -20,6 +23,10 @@ export function DELETE(path: string) {
 
 export function PUT(path: string) {
   return methodDecorator(Method.PUT, path);
+}
+
+export function PATCH(path: string) {
+  return methodDecorator(Method.PATCH, path);
 }
 
 export function HEAD(path: string) {

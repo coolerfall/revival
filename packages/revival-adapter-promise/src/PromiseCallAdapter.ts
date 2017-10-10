@@ -1,6 +1,8 @@
 import { Call, CallAdapter, ReviResponse } from "revival";
 
 /**
+ * A {@link CallAdapter} implemented by {@link Promise}.
+ *
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 export class PromiseCallAdapter<T> implements CallAdapter<T> {

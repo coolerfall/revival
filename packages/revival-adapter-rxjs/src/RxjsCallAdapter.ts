@@ -2,6 +2,8 @@ import { Call, CallAdapter, ReviResponse } from "revival";
 import { Observable } from "rxjs";
 
 /**
+ * A {@link CallAdapter} implemented by rxjs.
+ *
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 export class RxjsCallAdapter<T> implements CallAdapter<T> {
