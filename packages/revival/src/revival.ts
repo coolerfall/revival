@@ -17,7 +17,7 @@ export class Revival {
   constructor(
     private readonly baseUrl: string,
     private readonly callFactory: CallFactory,
-    private readonly callAdapter: CallAdapter<any>,
+    private readonly callAdapters: Array<CallAdapter<any>>,
     private readonly converter: Converter
   ) {
     if (!baseUrl.endsWith("/")) {
@@ -48,15 +48,36 @@ export class Revival {
     return `${this.baseUrl}${path}`;
   }
 
-  call<T>(originRequest: ReviRequest, isRaw: boolean): any {
-    let realCall: RevivalCall<T> = new RevivalCall(
+  /**
+   * Make a new revival call.
+   *
+   * @param originRequest origin request
+   * @param returnType return type
+   * @param isRaw return raw response or not
+   * @returns adapted result
+   */
+  call<T>(originRequest: ReviRequest, returnType: string, isRaw: boolean): any {
+    let revivalCall: RevivalCall<T> = new RevivalCall(
       originRequest,
       this.callFactory,
       this.converter,
       isRaw
     );
 
-    return this.callAdapter.adapt(realCall, isRaw);
+    return this.callAdapter(returnType).adapt(revivalCall, isRaw);
+  }
+
+  private callAdapter(returnType: string): CallAdapter<any> {
+    for (let i = 0; i < this.callAdapters.length; i++) {
+      let adapter: CallAdapter<any> = this.callAdapters[i];
+      if (adapter.check(returnType)) {
+        return adapter;
+      }
+    }
+
+    throw new Error(
+      `No call adapter found for given return type ${returnType}`
+    );
   }
 }
 
@@ -81,7 +102,7 @@ class RevivalCall<T> implements Call<T> {
 
   enqueue(
     onResponse?: (response: ReviResponse) => void,
-    onFailure?: () => void
+    onFailure?: (error: any) => void
   ): void {
     this.factory
       .newCall(this.originRequest)
@@ -104,7 +125,7 @@ class RevivalCall<T> implements Call<T> {
 export class RevivalBuilder {
   private revivalBaseUrl: string;
   private revivalCallFactory: CallFactory;
-  private adapter: CallAdapter<any> = new DefaultCallAdapter();
+  private callAdapters: Array<CallAdapter<any>> = [];
   private revivalConverter: Converter = new BuiltInJsonConverter();
   private readonly interceptors: Array<Interceptor> = [];
 
@@ -121,10 +142,9 @@ export class RevivalBuilder {
     return this;
   }
 
-  callAdapter(callAdapter: CallAdapter<any>): RevivalBuilder {
-    this.adapter = checkNotNull(
-      callAdapter,
-      "callAdapter is null or undefined"
+  addCallAdapter(callAdapter: CallAdapter<any>): RevivalBuilder {
+    this.callAdapters.push(
+      checkNotNull(callAdapter, "callAdapter is null or undefined")
     );
     return this;
   }
@@ -148,11 +168,12 @@ export class RevivalBuilder {
     if (!this.revivalCallFactory) {
       this.revivalCallFactory = new DefaultCallFactory(this.interceptors);
     }
+    this.callAdapters.push(new DefaultCallAdapter());
 
     return new Revival(
       this.revivalBaseUrl,
       this.revivalCallFactory,
-      this.adapter,
+      this.callAdapters,
       this.revivalConverter
     );
   }

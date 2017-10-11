@@ -20,11 +20,6 @@ describe("Revival", () => {
 
   before(function() {
     server = Sinon.fakeServer.create();
-    server.respondWith("POST", "http://test.com/test/post", [
-      200,
-      { "Content-Type": "application/json", header2: 23 },
-      `{ "id": 12, "name": "Revival" }`
-    ]);
   });
 
   after(function() {
@@ -32,9 +27,22 @@ describe("Revival", () => {
   });
 
   it("Get", () => {
-    TestApi.testGet("testHeader", "1111", { test1: 2, test2: "yes" });
+    server.respondWith(
+      "GET",
+      "http://test.com/test/get?test1=2&test2=yes&string=1111",
+      [200, { "Content-Type": "application/json" }, `{ "id": 123 }`]
+    );
+    TestApi.testGet("testHeader", "1111", { test1: 2, test2: "yes" }).enqueue(
+      r => console.log("Result", r),
+      e => console.log(e)
+    );
   });
   it("Post", () => {
+    server.respondWith("POST", "http://test.com/test/post", [
+      200,
+      { "Content-Type": "application/json", header2: 23 },
+      `{ "id": 12, "name": "Revival" }`
+    ]);
     TestApi.testPost({ kit: 11 }).subscribe(
       s => {
         assert.deepEqual(s, { id: 12, name: "Revival" });
@@ -43,7 +51,14 @@ describe("Revival", () => {
     );
   });
   it("MultiPart", () => {
-    TestApi.testMultiPart("This is description.");
+    server.respondWith("POST", "http://test.com/test/multipart", [
+      200,
+      { "Content-Type": "application/json" },
+      `{ "id": 12 }`
+    ]);
+    TestApi.testMultiPart("This is description.")
+      .then(r => assert.deepEqual(r, { id: 12 }))
+      .catch(e => console.log(e));
   });
   it("FormUrlEncoded", () => {
     TestApi.testUrlFormEncode(22);

@@ -24,7 +24,7 @@ export class LogInterceptor implements Interceptor {
       console.log(response.body);
     }
 
-    console.log(`--> END ${request.method} \n`);
+    console.log(`--> END ${request.method} ${request.url}\n`);
 
     return response;
   }

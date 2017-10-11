@@ -9,8 +9,12 @@ import { Observable } from "rxjs";
 export class RxjsCallAdapter<T> implements CallAdapter<T> {
   private constructor() {}
 
-  static create() {
+  static create(): CallAdapter<any> {
     return new RxjsCallAdapter();
+  }
+
+  check(returnType: string): boolean {
+    return returnType === "Observable";
   }
 
   adapt(call: Call<T>, returnRaw: boolean): any {
