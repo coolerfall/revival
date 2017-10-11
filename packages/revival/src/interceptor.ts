@@ -11,6 +11,7 @@ import { ReviRequest } from "./request";
 
 export interface Chain {
   request(): ReviRequest;
+
   proceed(request: ReviRequest): ReviResponse;
 }
 
@@ -20,8 +21,6 @@ export interface Interceptor {
 
 /**
  * A implementation for {@link Chain} to go through all the {@link Interceptor}s.
- *
- * @author Vincent Cheung (coolingfall@gmail.com)
  */
 export class RealInterceptorChain implements Chain {
   private calls: number = 0;

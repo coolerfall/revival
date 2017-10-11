@@ -21,7 +21,7 @@ export interface Call<T> {
 
   enqueue(
     onResponse?: (response: ReviResponse) => void,
-    onFailure?: () => void
+    onFailure?: (error: any) => void
   ): void;
 }
 

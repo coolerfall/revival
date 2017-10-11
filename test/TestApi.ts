@@ -19,11 +19,14 @@ import { Observable } from "rxjs/Observable";
 import { DUMMY } from "../packages/revival/src/dummy";
 import { Revival, RevivalBuilder } from "../packages/revival/src/revival";
 import { LogInterceptor } from "./LogInterceptor";
-import { RxjsCallAdapter } from "../packages/revival-adapter-rxjs/src/RxjsCallAdapter";
+import { RxjsCallAdapter } from "../packages/revival-adapter-rxjs/src/rxjs-call-adapter";
+import { PromiseCallAdapter } from "../packages/revival-adapter-promise/src/promise-call-adapter";
+import { Call } from "../packages/revival/src/call";
 
 let revival: Revival = new RevivalBuilder()
   .baseUrl("http://test.com/")
-  .callAdapter(RxjsCallAdapter.create())
+  .addCallAdapter(RxjsCallAdapter.create())
+  .addCallAdapter(PromiseCallAdapter.create())
   .addInterceptor(new LogInterceptor())
   .build();
 
@@ -34,7 +37,7 @@ export class TestApi {
     @Header("head1") header: string,
     @Query("string") query: string,
     @QueryMap map: object
-  ): Observable<Response> {
+  ): Call<Response> {
     return DUMMY;
   }
 
@@ -45,7 +48,7 @@ export class TestApi {
 
   @MultiPart
   @POST("test/multipart")
-  testMultiPart(@Part("desc") description: string): Observable<any> {
+  testMultiPart(@Part("desc") description: string): Promise<any> {
     return DUMMY;
   }
 

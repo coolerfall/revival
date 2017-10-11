@@ -8,8 +8,12 @@ import { Call, CallAdapter, ReviResponse } from "revival";
 export class PromiseCallAdapter<T> implements CallAdapter<T> {
   private constructor() {}
 
-  static create() {
-    new PromiseCallAdapter();
+  static create(): CallAdapter<any> {
+    return new PromiseCallAdapter();
+  }
+
+  check(returnType: string): boolean {
+    return returnType === "Promise";
   }
 
   adapt(call: Call<T>, returnRaw: boolean): any {

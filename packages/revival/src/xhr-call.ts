@@ -17,7 +17,11 @@ export class XhrCall implements Call<any> {
   constructor(
     private readonly originRequest: ReviRequest,
     private readonly interceptors: Array<Interceptor>
-  ) {}
+  ) {
+    this.getResponseWithInterceptors = this.getResponseWithInterceptors.bind(
+      this
+    );
+  }
 
   request(): ReviRequest {
     return this.originRequest;
@@ -28,8 +32,8 @@ export class XhrCall implements Call<any> {
   }
 
   enqueue(
-    onResponse: (response: ReviResponse) => void,
-    onFailure: () => void
+    onResponse?: (response: ReviResponse) => void,
+    onFailure?: (error: any) => void
   ): void {
     new AsyncXhrCall(
       this.getResponseWithInterceptors,
@@ -100,7 +104,7 @@ class AsyncXhrCall {
   constructor(
     private readonly getResponseWithInterceptors: () => ReviResponse,
     private readonly onResponse?: (response: ReviResponse) => void,
-    private readonly onFailure?: () => void
+    private readonly onFailure?: (error: any) => void
   ) {}
   execute(): void {
     setTimeout(() => {
@@ -108,7 +112,7 @@ class AsyncXhrCall {
         let response: ReviResponse = this.getResponseWithInterceptors();
         this.onResponse && this.onResponse(response);
       } catch (e) {
-        this.onFailure && this.onFailure();
+        this.onFailure && this.onFailure(e);
       }
     }, 0);
   }

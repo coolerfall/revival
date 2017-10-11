@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import "reflect-metadata";
 import { Revival } from "../revival";
 import { RequestBuilder, Method } from "../request";
 
@@ -48,7 +49,13 @@ export function methodDecorator(method: Method, path: string) {
       builder.addBody(bodyArray);
       builder.addPart(partArray);
 
-      return revival.call(builder.build(), returnRaw);
+      let returnType: any = Reflect.getMetadata(
+        "design:returntype",
+        target,
+        propertyKey
+      );
+
+      return revival.call(builder.build(), returnType.name, returnRaw);
     };
 
     return descriptor;

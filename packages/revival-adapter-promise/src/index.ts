@@ -2,4 +2,4 @@
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 
-export { PromiseCallAdapter } from "./PromiseCallAdapter";
+export { PromiseCallAdapter } from "./promise-call-adapter";
