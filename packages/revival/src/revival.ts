@@ -7,7 +7,11 @@
 
 import { CallAdapter, DefaultCallAdapter } from "./call-adapter";
 import { Call, CallFactory, DefaultCallFactory } from "./call";
-import { BuiltInJsonConverter, Converter } from "./Converter";
+import {
+  BuiltInConverterFactory,
+  Converter,
+  ConverterFactory
+} from "./converter";
 import { Interceptor } from "./interceptor";
 import { ReviRequest } from "./request";
 import { ReviResponse } from "./response";
@@ -18,7 +22,7 @@ export class Revival {
     private readonly baseUrl: string,
     private readonly callFactory: CallFactory,
     private readonly callAdapters: Array<CallAdapter<any>>,
-    private readonly converter: Converter
+    private readonly converterFactory: ConverterFactory
   ) {
     if (!baseUrl.endsWith("/")) {
       throw new Error(`Base url must end with '/'.`);
@@ -48,25 +52,6 @@ export class Revival {
     return `${this.baseUrl}${path}`;
   }
 
-  /**
-   * Make a new revival call.
-   *
-   * @param originRequest origin request
-   * @param returnType return type
-   * @param isRaw return raw response or not
-   * @returns adapted result
-   */
-  call<T>(originRequest: ReviRequest, returnType: string, isRaw: boolean): any {
-    let revivalCall: RevivalCall<T> = new RevivalCall(
-      originRequest,
-      this.callFactory,
-      this.converter,
-      isRaw
-    );
-
-    return this.callAdapter(returnType).adapt(revivalCall, isRaw);
-  }
-
   private callAdapter(returnType: string): CallAdapter<any> {
     for (let i = 0; i < this.callAdapters.length; i++) {
       let adapter: CallAdapter<any> = this.callAdapters[i];
@@ -79,14 +64,40 @@ export class Revival {
       `No call adapter found for given return type ${returnType}`
     );
   }
+
+  /**
+   * Return an available serialize converter to serialize request body.
+   *
+   * @returns serialize converter
+   */
+  serializer(): Converter<any, any> {
+    return this.converterFactory.serializer();
+  }
+
+  /**
+   * Make a new revival call.
+   *
+   * @param originRequest origin request
+   * @param returnType return type
+   * @param isRaw return raw response or not
+   * @returns adapted result
+   */
+  call<T>(originRequest: ReviRequest, returnType: string, isRaw: boolean): any {
+    let revivalCall: RevivalCall<T> = new RevivalCall(
+      originRequest,
+      this.callFactory,
+      this.converterFactory
+    );
+
+    return this.callAdapter(returnType).adapt(revivalCall, isRaw);
+  }
 }
 
 class RevivalCall<T> implements Call<T> {
   constructor(
     private readonly originRequest: ReviRequest,
-    private readonly factory: CallFactory,
-    private readonly converter: Converter,
-    private readonly isRaw: boolean
+    private readonly callFactory: CallFactory,
+    private readonly converterFactory: ConverterFactory
   ) {}
 
   request(): ReviRequest {
@@ -94,39 +105,46 @@ class RevivalCall<T> implements Call<T> {
   }
 
   execute(): ReviResponse {
-    let response: ReviResponse = this.factory
+    let response: ReviResponse = this.callFactory
       .newCall(this.originRequest)
       .execute();
-    return this.isRaw ? response : this.converter.convert(response);
+
+    return this.parseResponse(response);
   }
 
   enqueue(
     onResponse?: (response: ReviResponse) => void,
     onFailure?: (error: any) => void
   ): void {
-    this.factory
+    this.callFactory
       .newCall(this.originRequest)
       .enqueue(
-        response =>
-          onResponse &&
-          onResponse(
-            this.isRaw ? response : this.converter.convert(response).body
-          ),
+        response => onResponse && onResponse(this.parseResponse(response)),
         onFailure
       );
+  }
+
+  cancel(): void {}
+
+  private parseResponse(response: ReviResponse): ReviResponse {
+    if (response.code === 204 || response.code === 205 || !response.body) {
+      return response;
+    }
+
+    return Object.assign(response, {
+      body: this.converterFactory.deserializer().convert(response.body)
+    });
   }
 }
 
 /**
  * A builder to build a new {@link Revival}.
- *
- * @author Vincent Cheung (coolingfall@gmail.com)
  */
 export class RevivalBuilder {
   private revivalBaseUrl: string;
   private revivalCallFactory: CallFactory;
   private callAdapters: Array<CallAdapter<any>> = [];
-  private revivalConverter: Converter = new BuiltInJsonConverter();
+  private revivalConverterFactory: ConverterFactory = new BuiltInConverterFactory();
   private readonly interceptors: Array<Interceptor> = [];
 
   baseUrl(baseUrl: string): RevivalBuilder {
@@ -149,10 +167,10 @@ export class RevivalBuilder {
     return this;
   }
 
-  converter(converter: Converter): RevivalBuilder {
-    this.revivalConverter = checkNotNull(
-      converter,
-      "converter is null or undefined"
+  converterFactory(converterFactory: ConverterFactory): RevivalBuilder {
+    this.revivalConverterFactory = checkNotNull(
+      converterFactory,
+      "converterFactory is null or undefined"
     );
     return this;
   }
@@ -174,7 +192,7 @@ export class RevivalBuilder {
       this.revivalBaseUrl,
       this.revivalCallFactory,
       this.callAdapters,
-      this.revivalConverter
+      this.revivalConverterFactory
     );
   }
 }

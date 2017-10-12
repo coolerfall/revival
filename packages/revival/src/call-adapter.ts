@@ -24,7 +24,7 @@ export class DefaultCallAdapter implements CallAdapter<Call<any>> {
     return returnType === "Object";
   }
 
-  adapt(call: Call<any>): Call<any> {
+  adapt(call: Call<any>, returnRaw: boolean): Call<any> {
     return call;
   }
 }
