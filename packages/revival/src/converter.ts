@@ -5,20 +5,59 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { ReviResponse } from "./response";
-
 /**
- * A converter to convert response to the specified type.
+ * Convert objects to and from their representation in http request.
  */
-export interface Converter {
-  convert(value: ReviResponse): ReviResponse;
+export interface Converter<F, T> {
+  convert(value: F): T;
 }
 
 /**
- * Built in json converter used in revival.
+ * A converter factory to create serialize and parse {@link Converter}.
  */
-export class BuiltInJsonConverter implements Converter {
-  convert(value: ReviResponse): any {
-    return Object.assign({}, value, { body: JSON.parse(value.body) });
+export interface ConverterFactory {
+  /**
+   * Create a serializer to serialize request body.
+   *
+   * @returns serialize converter
+   */
+  serializer(): Converter<any, string>;
+
+  /**
+   * Create a deserializer to serialize response body.
+   *
+   * @returns parse converter
+   */
+  deserializer(): Converter<string, any>;
+}
+
+/**
+ * Built in json converter factory used in {@link Revival}.
+ */
+export class BuiltInConverterFactory implements ConverterFactory {
+  serializer(): Converter<any, string> {
+    return new BuiltInJsonSerializer();
+  }
+
+  deserializer(): Converter<string, any> {
+    return new BuiltInJsonParser();
+  }
+}
+
+/**
+ * Built in json serializer used in {@link BuiltInConverterFactory}.
+ */
+class BuiltInJsonSerializer implements Converter<any, string> {
+  convert(value: any): string {
+    return JSON.stringify(value);
+  }
+}
+
+/**
+ * Built in json deserializer used in {@link BuiltInConverterFactory}.
+ */
+class BuiltInJsonParser implements Converter<string, any> {
+  convert(value: string): any {
+    return JSON.parse(value);
   }
 }

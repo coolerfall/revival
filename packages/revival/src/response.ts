@@ -5,11 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { RevivalHeaders } from "./headers";
+
 export interface ReviResponse {
+  code: number;
+  url: string;
   body: any;
-  headers: object;
+  headers: RevivalHeaders;
 }
 
 export class HttpError {
-
+  constructor(public readonly errorMsg: string){}
 }

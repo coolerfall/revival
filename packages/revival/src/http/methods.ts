@@ -25,7 +25,7 @@ export function methodDecorator(method: Method, path: string) {
       let isFormUrlEncoded: boolean = target[`${propertyKey}_FormUrlEncoded`];
       let returnRaw: boolean = target[`${propertyKey}_Return_Raw`];
       let builder: RequestBuilder = new RequestBuilder(
-        revival.fullUrl(path),
+        revival,
         method,
         isMultiPart,
         isFormUrlEncoded,
@@ -44,10 +44,12 @@ export function methodDecorator(method: Method, path: string) {
 
       check(method, queryArray, bodyArray, partArray);
 
-      builder.addHeader(headerArray, target[`${propertyKey}_Headers`]);
-      builder.addQuery(queryArray);
-      builder.addBody(bodyArray);
-      builder.addPart(partArray);
+      builder
+        .addPath(path)
+        .addHeader(headerArray, target[`${propertyKey}_Headers`])
+        .addQuery(queryArray)
+        .addBody(bodyArray)
+        .addPart(partArray);
 
       let returnType: any = Reflect.getMetadata(
         "design:returntype",

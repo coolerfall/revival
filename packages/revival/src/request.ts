@@ -6,6 +6,8 @@
  */
 
 import * as qs from "qs";
+import { RevivalHeaders } from "./headers";
+import { Revival } from "./revival";
 
 /**
  * All supported http method in revival.
@@ -22,7 +24,7 @@ export enum Method {
 export interface ReviRequest {
   url: string;
   method: Method;
-  headers?: object;
+  headers: RevivalHeaders;
   params?: any;
 }
 
@@ -30,13 +32,14 @@ export interface ReviRequest {
  * A builder to build {@link ReviRequest} to make a request.
  */
 export class RequestBuilder {
+  private readonly headers: RevivalHeaders = new RevivalHeaders();
+  private url: string;
   private isQuery: boolean;
   private params: any;
-  private headers: object = {};
   private contentType: string;
 
   constructor(
-    private url: string,
+    private readonly revival: Revival,
     private readonly method: Method,
     private readonly isMultiPart: boolean,
     private readonly isFormUrlEncoded: boolean,
@@ -55,22 +58,39 @@ export class RequestBuilder {
     }
   }
 
-  addHeader(headerArray: Array<object>, headers: object): void {
-    this.headers = {};
-    if (!this.returnRaw) {
-      Object.assign(this.headers, {
-        Accept: "application/json"
-      });
-    }
-    if (this.contentType) {
-      Object.assign(this.headers, { "Content-Type": this.contentType });
-    }
-    Object.assign(this.headers, headers, this.parseParameter(headerArray));
+  addPath(path: string): RequestBuilder {
+    this.url = this.revival.fullUrl(path);
+    return this;
   }
 
-  addQuery(queryArray: Array<object>): void {
+  addHeader(headerArray: Array<object>, headers: any): RequestBuilder {
+    if (!this.returnRaw) {
+      this.headers.append("Accept", "application/json");
+    }
+
+    if (this.contentType) {
+      this.headers.append("Content-Type", this.contentType);
+    }
+
+    for (let key in headers) {
+      if (headers.hasOwnProperty(key)) {
+        this.headers.append(key, headers[key]);
+      }
+    }
+
+    let overrideHeaders: any = this.parseParameter(headerArray);
+    for (let key in overrideHeaders) {
+      if (overrideHeaders.hasOwnProperty(key)) {
+        this.headers.set(key, overrideHeaders[key]);
+      }
+    }
+
+    return this;
+  }
+
+  addQuery(queryArray: Array<object>): RequestBuilder {
     if (!this.isQuery) {
-      return;
+      return this;
     }
 
     let params: object = this.parseParameter(queryArray);
@@ -78,19 +98,25 @@ export class RequestBuilder {
     if (query && query.length > 0) {
       this.url = `${this.url}?${query}`;
     }
+
+    return this;
   }
 
-  addBody(bodyArray: Array<object>): void {
+  addBody(bodyArray: Array<object>): RequestBuilder {
     if (this.isQuery) {
-      return;
+      return this;
     }
 
-    this.params = JSON.stringify(this.parseParameter(bodyArray));
+    this.params = this.revival
+      .serializer()
+      .convert(this.parseParameter(bodyArray));
+
+    return this;
   }
 
-  addPart(partArray: Array<object>): void {
+  addPart(partArray: Array<object>): RequestBuilder {
     if (this.isQuery || partArray.length === 0) {
-      return;
+      return this;
     }
 
     let params: any = this.parseParameter(partArray);
@@ -103,6 +129,8 @@ export class RequestBuilder {
     }
 
     this.params = formData;
+
+    return this;
   }
 
   build(): ReviRequest {

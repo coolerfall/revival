@@ -8,6 +8,7 @@
 import { Call } from "./call";
 import { Chain, Interceptor, RealInterceptorChain } from "./interceptor";
 import { ReviRequest } from "./request";
+import { RevivalHeaders } from "./headers";
 import { HttpError, ReviResponse } from "./response";
 
 /**
@@ -42,6 +43,10 @@ export class XhrCall implements Call<any> {
     ).execute();
   }
 
+  cancel(): void {
+
+  }
+
   private getResponseWithInterceptors(): ReviResponse {
     let interceptors: Array<Interceptor> = [];
     interceptors.push(...this.interceptors);
@@ -67,45 +72,42 @@ class CallServerInterceptor implements Interceptor {
   execute(request: ReviRequest): ReviResponse {
     let xhr: XMLHttpRequest = new XMLHttpRequest();
     xhr.open(request.method, request.url, false);
+    /* add all headers */
+    request.headers.forEach((name, values) => {
+      xhr.setRequestHeader(name, values.join(","));
+    });
+    /* add an Accept if headers is not present */
+    if (!request.headers.has("Accept")) {
+      xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
+    }
     xhr.send(request.params);
 
     if (xhr.status < 200 || xhr.status >= 300) {
-      throw new HttpError();
+      throw new HttpError(xhr.statusText || "Unkown Error");
     }
 
     let response: any =
       typeof xhr.response === "undefined" ? xhr.responseText : xhr.response;
 
     return {
+      code: xhr.status,
+      url: xhr.responseURL || request.url,
       body: response,
-      headers: this.parseResponseHeaders(xhr.getAllResponseHeaders())
+      headers: new RevivalHeaders(xhr.getAllResponseHeaders())
     };
-  }
-
-  parseResponseHeaders(allHeaders: string) {
-    let headers: any = {};
-    if (!allHeaders) {
-      return headers;
-    }
-    let headerPairs = allHeaders.split("\u000d\u000a");
-    for (let i = 0, len = headerPairs.length; i < len; i++) {
-      let headerPair = headerPairs[i];
-      let index = headerPair.indexOf("\u003a\u0020");
-      if (index > 0) {
-        let key = headerPair.substring(0, index);
-        headers[key] = headerPair.substring(index + 2);
-      }
-    }
-    return headers;
   }
 }
 
+/**
+ * Asynchronously XMLHttpRequest call for enqueue.
+ */
 class AsyncXhrCall {
   constructor(
     private readonly getResponseWithInterceptors: () => ReviResponse,
     private readonly onResponse?: (response: ReviResponse) => void,
     private readonly onFailure?: (error: any) => void
   ) {}
+
   execute(): void {
     setTimeout(() => {
       try {

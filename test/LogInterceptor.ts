@@ -5,6 +5,7 @@
 import { Chain, Interceptor } from "../packages/revival/src/interceptor";
 import { ReviRequest } from "../packages/revival/src/request";
 import { ReviResponse } from "../packages/revival/src/response";
+import { RevivalHeaders } from "../packages/revival/src/headers";
 
 export class LogInterceptor implements Interceptor {
   intercept(chain: Chain): ReviResponse {
@@ -17,7 +18,14 @@ export class LogInterceptor implements Interceptor {
       console.log(request.params);
     }
 
-    let response: ReviResponse = chain.proceed(request);
+    let response: ReviResponse;
+    try {
+      response = chain.proceed(request);
+    } catch (e) {
+      console.error("<-- HTTP FAILED: ", e, "\n");
+      throw e;
+    }
+
     this.logHeaders(response.headers);
 
     if (response.body) {
@@ -29,15 +37,13 @@ export class LogInterceptor implements Interceptor {
     return response;
   }
 
-  private logHeaders(headers: any): void {
+  private logHeaders(headers: RevivalHeaders): void {
     if (!headers) {
       return;
     }
 
-    for (let key in headers) {
-      if (headers.hasOwnProperty(key)) {
-        console.log(`${key}: ${headers[key]}`);
-      }
-    }
+    headers.forEach(((name, values) => {
+      console.log(`${name}: ${values}`);
+    }));
   }
 }

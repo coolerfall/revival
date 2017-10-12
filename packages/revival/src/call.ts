@@ -23,12 +23,20 @@ export interface Call<T> {
     onResponse?: (response: ReviResponse) => void,
     onFailure?: (error: any) => void
   ): void;
+
+  cancel(): void;
 }
 
 /**
  * A factory to create a new {@link Call}.
  */
 export interface CallFactory {
+  /**
+   * Return a new call with origin request.
+   *
+   * @param request origin request
+   * @returns new call
+   */
   newCall(request: ReviRequest): Call<any>;
 }
 
