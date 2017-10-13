@@ -48,6 +48,10 @@ export function Headers(headers: object) {
   };
 }
 
+export function Path(key: string) {
+  return parameterDecorator("Path", key);
+}
+
 export function Query(key: string) {
   return parameterDecorator("Query", key);
 }

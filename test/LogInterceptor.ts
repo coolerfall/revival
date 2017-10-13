@@ -2,10 +2,13 @@
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 
-import { Chain, Interceptor } from "../packages/revival/src/interceptor";
-import { ReviRequest } from "../packages/revival/src/request";
-import { ReviResponse } from "../packages/revival/src/response";
-import { RevivalHeaders } from "../packages/revival/src/headers";
+import {
+  Chain,
+  Interceptor,
+  ReviRequest,
+  ReviResponse,
+  RevivalHeaders
+} from "../packages/revival/lib";
 
 export class LogInterceptor implements Interceptor {
   intercept(chain: Chain): ReviResponse {
@@ -42,8 +45,8 @@ export class LogInterceptor implements Interceptor {
       return;
     }
 
-    headers.forEach(((name, values) => {
+    headers.forEach((name, values) => {
       console.log(`${name}: ${values}`);
-    }));
+    });
   }
 }

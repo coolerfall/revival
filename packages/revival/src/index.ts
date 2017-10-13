@@ -9,6 +9,7 @@ export { Call, CallFactory } from "./call";
 export { CallAdapter } from "./call-adapter";
 export { Converter } from "./Converter";
 export { Chain, Interceptor } from "./interceptor";
+export { RevivalHeaders } from "./headers";
 export { ReviRequest } from "./request";
 export { ReviResponse } from "./response";
 export { Revival, RevivalBuilder } from "./revival";
@@ -19,11 +20,14 @@ export {
   PUT,
   PATCH,
   HEAD,
+  Header,
   Headers,
   Query,
   QueryMap,
+  Path,
   Field,
   Body,
+  Part,
   MultiPart,
   FormUrlEncoded,
   Raw

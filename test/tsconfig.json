@@ -7,7 +7,7 @@
     "strict": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "experimentalDecorators": true,
+    "experimentalDecorators": true
   },
   "exclude": [
     "android",

@@ -10,6 +10,7 @@ import {
   Headers,
   MultiPart,
   Part,
+  Path,
   POST,
   Query,
   QueryMap,
@@ -25,17 +26,19 @@ import { Call } from "../packages/revival/src/call";
 
 let revival: Revival = new RevivalBuilder()
   .baseUrl("http://test.com/")
-  .addCallAdapter(RxjsCallAdapter.create())
-  .addCallAdapter(PromiseCallAdapter.create())
-  .addInterceptor(new LogInterceptor())
+  .addCallAdapter(RxjsCallAdapter.create() as any)
+  .addCallAdapter(PromiseCallAdapter.create() as any)
+  .addInterceptor(new LogInterceptor() as any)
   .build();
 
 export class TestApi {
   @Raw
-  @GET("test/get")
+  @GET("test/get/{user}/{id}")
   testGet(
     @Header("head1") header: string,
     @Query("string") query: string,
+    @Path("user") user: string,
+    @Path("id") id: string,
     @QueryMap map: object
   ): Call<Response> {
     return DUMMY;
