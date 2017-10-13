@@ -58,7 +58,15 @@ export class RequestBuilder {
     }
   }
 
-  addPath(path: string): RequestBuilder {
+  addPath(path: string, pathArray: Array<object>): RequestBuilder {
+    let pathRegExpArray = path.match(/{[a-zA-Z][a-zA-Z0-9_-]*}/gi);
+    if (pathRegExpArray) {
+      let paths: any = this.parseParameter(pathArray);
+      pathRegExpArray.forEach(regExp => {
+        let key = regExp.replace(/^{|}/gi, "");
+        path = path.replace(regExp, paths[key]);
+      });
+    }
     this.url = this.revival.fullUrl(path);
     return this;
   }
@@ -151,6 +159,7 @@ export class RequestBuilder {
         if (key) {
           let value: any = this.args[param.index];
           if (this.isQuery && value instanceof Object) {
+            /* fix this with converter */
             value = JSON.stringify(value);
           }
           params[key] = value;

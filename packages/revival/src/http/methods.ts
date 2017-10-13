@@ -37,6 +37,8 @@ export function methodDecorator(method: Method, path: string) {
         target[`${propertyKey}_Header_Parameters`] || [];
       let queryArray: Array<object> =
         target[`${propertyKey}_Query_Parameters`] || [];
+      let pathArray: Array<object> =
+        target[`${propertyKey}_Path_Parameters`] || [];
       let bodyArray: Array<object> =
         target[`${propertyKey}_Body_Parameters`] || [];
       let partArray: Array<object> =
@@ -45,7 +47,7 @@ export function methodDecorator(method: Method, path: string) {
       check(method, queryArray, bodyArray, partArray);
 
       builder
-        .addPath(path)
+        .addPath(path, pathArray)
         .addHeader(headerArray, target[`${propertyKey}_Headers`])
         .addQuery(queryArray)
         .addBody(bodyArray)

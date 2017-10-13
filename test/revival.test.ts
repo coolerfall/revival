@@ -29,12 +29,15 @@ describe("Revival", () => {
   it("Get", () => {
     server.respondWith(
       "GET",
-      "http://test.com/test/get?test1=2&test2=yes&string=1111",
+      "http://test.com/test/get/VC/24?test1=2&test2=yes&string=1111",
       [200, { "Content-Type": "application/json" }, `{ "id": 123 }`]
     );
-    TestApi.testGet("testHeader", "1111", { test1: 2, test2: "yes" }).enqueue(
-      r => console.log("Result", r),
-      e => console.log(e)
+    TestApi.testGet("testHeader", "1111", "VC", "24", {
+      test1: 2,
+      test2: "yes"
+    }).enqueue(
+      (r: any) => console.log("Result", r),
+      (e: any) => console.log(e)
     );
   });
   it("Post", () => {
@@ -44,10 +47,10 @@ describe("Revival", () => {
       `{ "id": 12, "name": "Revival" }`
     ]);
     TestApi.testPost({ kit: 11 }).subscribe(
-      s => {
+      (s: any) => {
         assert.deepEqual(s, { id: 12, name: "Revival" });
       },
-      e => console.log("error: ", e)
+      (e: any) => console.log("error: ", e)
     );
   });
   it("MultiPart", () => {
@@ -57,8 +60,8 @@ describe("Revival", () => {
       `{ "id": 12 }`
     ]);
     TestApi.testMultiPart("This is description.")
-      .then(r => assert.deepEqual(r, { id: 12 }))
-      .catch(e => console.log(e));
+      .then((r: any) => assert.deepEqual(r, { id: 12 }))
+      .catch((e: any) => console.log(e));
   });
   it("FormUrlEncoded", () => {
     TestApi.testUrlFormEncode(22);
