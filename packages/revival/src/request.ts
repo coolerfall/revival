@@ -123,7 +123,7 @@ export class RequestBuilder {
   }
 
   addPart(partArray: Array<object>): RequestBuilder {
-    if (this.isQuery || partArray.length === 0) {
+    if (this.isQuery || partArray.length === 0 || !this.isFormUrlEncoded) {
       return this;
     }
 

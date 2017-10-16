@@ -31,7 +31,7 @@ let revival: Revival = new RevivalBuilder()
   .addInterceptor(new LogInterceptor() as any)
   .build();
 
-export class TestApi {
+class TestApi {
   @Raw
   @GET("test/get/{user}/{id}")
   testGet(
