@@ -3,6 +3,7 @@
     "target": "es6",
     "allowJs": false,
     "sourceMap": false,
+    "outDir": "lib",
     "strict": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -10,10 +11,14 @@
     "emitDecoratorMetadata": true,
     "declaration": true
   },
+  "formatCodeOptions": {
+    "indentSize": 2,
+    "tabSize": 2
+  },
   "exclude": [
     "android",
     "ios",
     "node_modules",
-    "packages"
+    "lib"
   ]
 }

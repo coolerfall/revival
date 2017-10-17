@@ -1,12 +1,10 @@
 {
   "name": "revival",
-  "version": "0.1.0",
-  "description": "A RESTful http client for react native and typescript/javascript.",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "private": true,
   "scripts": {
-    "build": "tsc --pretty",
-    "test": "mocha -r ts-node/register __tests__/decorator.ts"
+    "build": "rm -rf packages/*/lib && lerna exec -- npm run build",
+    "publish": "npm run build && lerna publish --skip-git",
+    "test": "mocha -r ts-node/register test/revival.test.ts"
   },
   "repository": {
     "type": "git",
@@ -15,17 +13,17 @@
   "keywords": [
     "http",
     "restful",
-    "react-native"
+    "xhr",
+    "typescript"
   ],
   "author": "Vincent Cheung",
-  "peerDependencies": {
-    "qs": "*",
-    "rxjs": "*"
-  },
+  "license": "MIT",
   "devDependencies": {
+    "@types/chai": "4.0.4",
     "@types/mocha": "2.2.43",
     "@types/qs": "6.5.0",
     "@types/sinon": "2.3.5",
+    "chai": "4.1.2",
     "mocha": "3.5.3",
     "qs": "6.5.0",
     "rxjs": "5.4.3",

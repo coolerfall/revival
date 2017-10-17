@@ -2,18 +2,18 @@
   "compilerOptions": {
     "target": "es6",
     "allowJs": false,
+    "jsx": "react",
     "sourceMap": false,
     "strict": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "declaration": true
+    "experimentalDecorators": true
   },
   "exclude": [
     "android",
     "ios",
     "node_modules",
-    "packages"
+    "lib",
+    "test"
   ]
 }
