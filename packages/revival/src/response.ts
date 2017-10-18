@@ -15,5 +15,5 @@ export interface ReviResponse {
 }
 
 export class HttpError {
-  constructor(public readonly errorMsg: string){}
+  constructor(public readonly errorMsg: string) {}
 }

@@ -43,9 +43,7 @@ export class XhrCall implements Call<any> {
     ).execute();
   }
 
-  cancel(): void {
-
-  }
+  cancel(): void {}
 
   private getResponseWithInterceptors(): ReviResponse {
     let interceptors: Array<Interceptor> = [];
@@ -72,6 +70,9 @@ class CallServerInterceptor implements Interceptor {
   execute(request: ReviRequest): ReviResponse {
     let xhr: XMLHttpRequest = new XMLHttpRequest();
     xhr.open(request.method, request.url, false);
+    if (request.withCredentials) {
+      xhr.withCredentials = true;
+    }
     /* add all headers */
     request.headers.forEach((name, values) => {
       xhr.setRequestHeader(name, values.join(","));
@@ -112,9 +113,13 @@ class AsyncXhrCall {
     setTimeout(() => {
       try {
         let response: ReviResponse = this.getResponseWithInterceptors();
-        this.onResponse && this.onResponse(response);
+        if (this.onResponse) {
+          this.onResponse(response);
+        }
       } catch (e) {
-        this.onFailure && this.onFailure(e);
+        if (this.onFailure) {
+          this.onFailure(e);
+        }
       }
     }, 0);
   }

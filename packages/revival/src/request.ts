@@ -25,6 +25,7 @@ export interface ReviRequest {
   url: string;
   method: Method;
   headers: RevivalHeaders;
+  withCredentials?: boolean;
   params?: any;
 }
 

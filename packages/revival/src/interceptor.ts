@@ -53,7 +53,7 @@ export class RealInterceptorChain implements Chain {
     );
     let interceptor: Interceptor = this.interceptors[this.index];
     let response: ReviResponse = interceptor.intercept(next);
-    if (this.index + 1 < this.interceptors.length && next.calls != 1) {
+    if (this.index + 1 < this.interceptors.length && next.calls !== 1) {
       throw Error(
         "Revival interceptor " +
           interceptor +
