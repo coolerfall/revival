@@ -160,8 +160,7 @@ export class RequestBuilder {
         if (key) {
           let value: any = this.args[param.index];
           if (this.isQuery && value instanceof Object) {
-            /* fix this with converter */
-            value = JSON.stringify(value);
+            throw Error("Query parameters should not be object.");
           }
           params[key] = value;
         } else {

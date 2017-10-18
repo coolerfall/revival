@@ -1,7 +1,6 @@
 {
   "name": "revival-adapter-rxjs",
   "private": true,
-  "version": "0.3.0",
   "description": "Samples for revival.",
   "repository": {
     "type": "git",
@@ -15,7 +14,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/qs": "6.5.0",
-    "@types/xml-js": "1.0.0",
     "qs": "6.5.1",
     "revival": "file:../packages/revival/lib",
     "rxjs": "5.4.3",

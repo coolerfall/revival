@@ -1,5 +1,5 @@
-import { Call, CallAdapter, ReviResponse } from "revival";
-import { Observable } from "rxjs";
+import { Call, CallAdapter } from "revival";
+import { Observable, Observer } from "rxjs";
 
 /**
  * A {@link CallAdapter} implemented by rxjs.
@@ -18,10 +18,12 @@ export class RxjsCallAdapter<T> implements CallAdapter<T> {
   }
 
   adapt(call: Call<T>, returnRaw: boolean): any {
-    return Observable.defer(() => {
+    return Observable.create((observer: Observer<any>) => {
       try {
-        let response: ReviResponse = call.execute();
-        return Observable.of(returnRaw ? response : response.body);
+        call.enqueue(
+          response => observer.next(returnRaw ? response : response.body),
+          error => Observable.throw(error)
+        );
       } catch (e) {
         return Observable.throw(e);
       }

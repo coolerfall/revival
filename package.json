@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "rm -rf packages/*/lib && lerna exec -- npm run build",
-    "publish": "npm run build && lerna publish --skip-git",
+    "publish": "npm run build && lerna publish --skip-git --force-publish=*",
     "test": "mocha -r ts-node/register test/revival.test.ts"
   },
   "repository": {
