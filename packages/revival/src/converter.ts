@@ -26,7 +26,7 @@ export interface ConverterFactory {
   /**
    * Create a deserializer to serialize response body.
    *
-   * @returns parse converter
+   * @returns deserializer converter
    */
   deserializer(): Converter<string, any>;
 }

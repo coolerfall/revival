@@ -1,15 +1,14 @@
-/**
- * @author Vincent Cheung (coolingfall@gmail.com)
- */
-
 import {
   Chain,
   Interceptor,
   ReviRequest,
   ReviResponse,
   RevivalHeaders
-} from "../packages/revival/lib";
+} from "revival";
 
+/**
+ * @author Vincent Cheung (coolingfall@gmail.com)
+ */
 export class LogInterceptor implements Interceptor {
   intercept(chain: Chain): ReviResponse {
     let request: ReviRequest = chain.request();

@@ -1,6 +1,6 @@
 Rxjs Adapter
 ======
-An adapter for adapting rxjs types.
+An adapter for adapting [rxjs][1] types.
 
 Installation and Usage
 ====
@@ -32,7 +32,7 @@ class MyApi {
 
 Credits
 =======
-* [Retrofit][1] - Type-safe HTTP client for Android and Java by Square, Inc.
+* [Retrofit][2] - Type-safe HTTP client for Android and Java by Square, Inc.
 
 
 License
@@ -46,4 +46,5 @@ License
 	LICENSE file in the root directory of this source tree.
 ```
 
-[1]: https://github.com/square/retrofit
+[1]: https://github.com/ReactiveX/rxjs
+[2]: https://github.com/square/retrofit

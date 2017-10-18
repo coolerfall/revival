@@ -8,9 +8,9 @@
     "curly": false,
     "indent": [
       true,
-      "tabs"
+      "spaces"
     ],
-    "interface-name": true,
+    "interface-name": false,
     "jsdoc-format": true,
     "no-debugger": true,
     "no-duplicate-key": true,
