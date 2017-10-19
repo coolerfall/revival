@@ -107,14 +107,6 @@ class RevivalCall<T> implements Call<T> {
     return this.originRequest;
   }
 
-  execute(): ReviResponse {
-    let response: ReviResponse = this.callFactory
-      .newCall(this.originRequest)
-      .execute();
-
-    return this.parseResponse(response);
-  }
-
   enqueue(
     onResponse?: (response: ReviResponse) => void,
     onFailure?: (error: any) => void

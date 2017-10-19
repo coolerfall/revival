@@ -6,6 +6,8 @@
  */
 
 import { Call } from "./call";
+import { ReviRequest } from "./request";
+import { ReviResponse } from "./response";
 
 /**
  * Call adapter which will adapt response to another type.
@@ -25,6 +27,32 @@ export class DefaultCallAdapter implements CallAdapter<Call<any>> {
   }
 
   adapt(call: Call<any>, returnRaw: boolean): Call<any> {
-    return call;
+    return new RawCall(call, returnRaw);
+  }
+}
+
+class RawCall implements Call<any> {
+  constructor(
+    private readonly originCall: Call<any>,
+    private readonly returnRaw: boolean
+  ) {}
+
+  request(): ReviRequest {
+    return this.originCall.request();
+  }
+
+  enqueue(
+    onResponse?: (response: ReviResponse) => void,
+    onFailure?: (error: any) => void
+  ): void {
+    this.originCall.enqueue(
+      response =>
+        onResponse && onResponse(this.returnRaw ? response : response.body),
+      error => onFailure && onFailure(error)
+    );
+  }
+
+  cancel(): void {
+    this.originCall.cancel();
   }
 }

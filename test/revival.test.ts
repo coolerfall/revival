@@ -20,6 +20,7 @@ describe("Revival", () => {
 
   before(function() {
     server = Sinon.fakeServer.create();
+    server.respondImmediately = true;
   });
 
   after(function() {

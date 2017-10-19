@@ -1,8 +1,8 @@
 import {
   Chain,
   Interceptor,
+  ResponseHandler,
   ReviRequest,
-  ReviResponse,
   RevivalHeaders
 } from "revival";
 
@@ -10,7 +10,7 @@ import {
  * @author Vincent Cheung (coolingfall@gmail.com)
  */
 export class LogInterceptor implements Interceptor {
-  intercept(chain: Chain): ReviResponse {
+  intercept(chain: Chain): ResponseHandler {
     let request: ReviRequest = chain.request();
 
     console.log(`--> ${request.method} ${request.url}`);
@@ -20,23 +20,27 @@ export class LogInterceptor implements Interceptor {
       console.log(request.params);
     }
 
-    let response: ReviResponse;
+    let handler: ResponseHandler;
     try {
-      response = chain.proceed(request);
+      handler = chain.proceed(request);
+      handler.enqueue(
+        response => {
+          this.logHeaders(response.headers);
+          if (response.body) {
+            console.log(response.body);
+          }
+          console.log(`--> END ${request.method} ${request.url}\n`);
+        },
+        error => {
+          console.error("<-- HTTP FAILED: ", error, "\n");
+        }
+      );
     } catch (e) {
       console.error("<-- HTTP FAILED: ", e, "\n");
       throw e;
     }
 
-    this.logHeaders(response.headers);
-
-    if (response.body) {
-      console.log(response.body);
-    }
-
-    console.log(`--> END ${request.method} ${request.url}\n`);
-
-    return response;
+    return handler;
   }
 
   private logHeaders(headers: RevivalHeaders): void {
