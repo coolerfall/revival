@@ -33,25 +33,13 @@ export class XhrCall implements Call<any> {
     onResponse?: (response: ReviResponse) => void,
     onFailure?: (error: any) => void
   ): void {
-    let handler = this.getResponseWithInterceptors();
-    let responseHandler = handler.responseHandler();
-    let failureHandler = handler.falureHandler();
-
-    handler.enqueue(
+    this.getResponseWithInterceptors().enqueue(
       response => {
-        if (responseHandler) {
-          responseHandler(response);
-        }
-
         if (onResponse) {
           onResponse(response);
         }
       },
       error => {
-        if (failureHandler) {
-          failureHandler(error);
-        }
-
         if (onFailure) {
           onFailure(error);
         }
@@ -102,14 +90,19 @@ class CallServerInterceptor implements Interceptor {
 
     xhr.addEventListener("load", () => {
       if (xhr.readyState === 4) {
-        if (xhr.status < 200 || xhr.status >= 300) {
+        let status = xhr.status;
+        let ok: boolean = false;
+        if (status < 200 || status >= 300) {
           handler.handleError(new HttpError(xhr.statusText || "Unkown Error"));
+        } else {
+          ok = true;
         }
 
         let response: any =
           typeof xhr.response === "undefined" ? xhr.responseText : xhr.response;
 
         let realResponse: ReviResponse = {
+          ok: ok,
           code: xhr.status,
           url: xhr.responseURL || request.url,
           body: response,

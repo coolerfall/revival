@@ -72,7 +72,7 @@ export class RequestBuilder {
     return this;
   }
 
-  addHeader(headerArray: Array<object>, headers: any): RequestBuilder {
+  addHeader(headerArray: Array<object>, headers: string[]): RequestBuilder {
     if (!this.returnRaw) {
       this.headers.append("Accept", "application/json");
     }
@@ -81,11 +81,18 @@ export class RequestBuilder {
       this.headers.append("Content-Type", this.contentType);
     }
 
-    for (let key in headers) {
-      if (headers.hasOwnProperty(key)) {
-        this.headers.append(key, headers[key]);
+    headers.forEach(header => {
+      let colon = header.indexOf(":");
+      if (colon === -1 || colon === 0 || colon === header.length - 1) {
+        throw Error(
+          `@Headers value must be in the form \"Name: Value\". Found: ${header}`
+        );
       }
-    }
+
+      let headerName = header.substring(0, colon);
+      let headerValue = header.substring(colon + 1).trim();
+      this.headers.set(headerName, headerValue);
+    });
 
     let overrideHeaders: any = this.parseParameter(headerArray);
     for (let key in overrideHeaders) {

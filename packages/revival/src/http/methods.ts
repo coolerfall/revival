@@ -48,7 +48,7 @@ export function methodDecorator(method: Method, path: string) {
 
       builder
         .addPath(path, pathArray)
-        .addHeader(headerArray, target[`${propertyKey}_Headers`])
+        .addHeader(headerArray, target[`${propertyKey}_Headers`] || [])
         .addQuery(queryArray)
         .addBody(bodyArray)
         .addPart(partArray);

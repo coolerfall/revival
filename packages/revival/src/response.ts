@@ -6,8 +6,10 @@
  */
 
 import { RevivalHeaders } from "./headers";
+import { checkNotNull } from "./utils";
 
 export interface ReviResponse {
+  ok: boolean;
   code: number;
   url: string;
   body: any;
@@ -15,47 +17,38 @@ export interface ReviResponse {
 }
 
 export interface ResponseHandler {
-  responseHandler(): ((response: ReviResponse) => void) | undefined | null;
-  falureHandler(): ((error: any) => void) | undefined | null;
-
   enqueue(
-    onResponse?: (response: ReviResponse) => void,
-    onFailure?: (error: any) => void
+    onResponse: (response: ReviResponse) => void,
+    onFailure: (error: any) => void
   ): void;
 }
 
 export class RevivalResponseHandler implements ResponseHandler {
-  private onResponse?: (response: ReviResponse) => void;
-  private onFailure?: (error: any) => void;
-
-  responseHandler(): ((response: ReviResponse) => void) | undefined | null {
-    return this.onResponse;
-  }
-
-  falureHandler(): ((error: any) => void) | undefined | null {
-    return this.onFailure;
-  }
+  private readonly successHandlers: Array<
+    (response: ReviResponse) => void
+  > = [];
+  private readonly failureHandlers: Array<(error: any) => void> = [];
 
   enqueue(
-    onResponse?: (response: ReviResponse) => void,
-    onFailure?: (error: any) => void
+    onResponse: (response: ReviResponse) => void,
+    onFailure: (error: any) => void
   ): void {
-    this.onResponse = onResponse;
-    this.onFailure = onFailure;
+    this.successHandlers.push(checkNotNull(onResponse, "onResponse === null"));
+    this.failureHandlers.push(checkNotNull(onFailure, "onFailure === null"));
   }
 
   handleResponse(response: ReviResponse) {
-    if (!this.onResponse) {
-      return;
-    }
-    this.onResponse(response);
+    this.successHandlers.forEach(
+      (onResponse: (response: ReviResponse) => void) => {
+        onResponse(response);
+      }
+    );
   }
 
   handleError(error: any) {
-    if (!this.onFailure) {
-      return;
-    }
-    this.onFailure(error);
+    this.failureHandlers.forEach((onFailure: (error: any) => void) => {
+      onFailure(error);
+    });
   }
 }
 

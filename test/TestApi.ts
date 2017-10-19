@@ -61,7 +61,7 @@ class TestApi {
     return DUMMY;
   }
 
-  @Headers({ header1: 8, header2: "This" })
+  @Headers(["header1: 8", "header2: This"])
   @GET("test/headers")
   testHeaders(): Observable<any> {
     return DUMMY;

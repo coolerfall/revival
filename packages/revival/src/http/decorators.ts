@@ -37,7 +37,7 @@ export function Header(key: string) {
   return parameterDecorator("Header", key);
 }
 
-export function Headers(headers: object) {
+export function Headers(headers: string[]) {
   return function(
     target: any,
     propertyKey: string,
