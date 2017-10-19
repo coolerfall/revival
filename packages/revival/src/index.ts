@@ -7,11 +7,11 @@
 
 export { Call, CallFactory } from "./call";
 export { CallAdapter } from "./call-adapter";
-export { Converter } from "./Converter";
+export { Converter, ConverterFactory } from "./Converter";
 export { Chain, Interceptor } from "./interceptor";
 export { RevivalHeaders } from "./headers";
 export { ReviRequest } from "./request";
-export { ReviResponse } from "./response";
+export { ReviResponse, ResponseHandler } from "./response";
 export { Revival, RevivalBuilder } from "./revival";
 export {
   GET,

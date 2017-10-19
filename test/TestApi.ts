@@ -19,7 +19,7 @@ import {
 import { Observable } from "rxjs/Observable";
 import { DUMMY } from "../packages/revival/src/dummy";
 import { Revival, RevivalBuilder } from "../packages/revival/src/revival";
-import { LogInterceptor } from "./LogInterceptor";
+import { LogInterceptor } from "../samples/src/RevivalLogInterceptor";
 import { RxjsCallAdapter } from "../packages/revival-adapter-rxjs/src/rxjs-call-adapter";
 import { PromiseCallAdapter } from "../packages/revival-adapter-promise/src/promise-call-adapter";
 import { Call } from "../packages/revival/src/call";

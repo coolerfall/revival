@@ -17,8 +17,6 @@ import { ReviRequest } from "./request";
 export interface Call<T> {
   request(): ReviRequest;
 
-  execute(): ReviResponse;
-
   enqueue(
     onResponse?: (response: ReviResponse) => void,
     onFailure?: (error: any) => void

@@ -1,4 +1,4 @@
-import { Call, CallAdapter, ReviResponse } from "revival";
+import { Call, CallAdapter } from "revival";
 
 /**
  * A {@link CallAdapter} implemented by {@link Promise}.
@@ -22,8 +22,10 @@ export class PromiseCallAdapter<T> implements CallAdapter<T> {
       reject: <T>(reason?: any) => void
     ) {
       try {
-        let response: ReviResponse = call.execute();
-        return resolve(returnRaw ? response : response.body);
+        call.enqueue(
+          response => resolve(returnRaw ? response : response.body),
+          error => reject(error)
+        );
       } catch (e) {
         return reject(e);
       }

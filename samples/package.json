@@ -1,0 +1,22 @@
+{
+  "name": "revival-adapter-rxjs",
+  "private": true,
+  "description": "Samples for revival.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coolerfall/revival.git"
+  },
+  "keywords": [
+    "revival",
+    "samples"
+  ],
+  "author": "Vincent Cheung",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/qs": "6.5.0",
+    "qs": "6.5.1",
+    "revival": "file:../packages/revival/lib",
+    "rxjs": "5.4.3",
+    "xml-js": "1.5.1"
+  }
+}

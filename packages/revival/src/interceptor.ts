@@ -6,17 +6,17 @@
  */
 
 import { DUMMY } from "./dummy";
-import { ReviResponse } from "./response";
 import { ReviRequest } from "./request";
+import { ResponseHandler } from "./response";
 
 export interface Chain {
   request(): ReviRequest;
 
-  proceed(request: ReviRequest): ReviResponse;
+  proceed(request: ReviRequest): ResponseHandler;
 }
 
 export interface Interceptor {
-  intercept(chain: Chain): ReviResponse;
+  intercept(chain: Chain): ResponseHandler;
 }
 
 /**
@@ -35,7 +35,7 @@ export class RealInterceptorChain implements Chain {
     return this.pureRequest;
   }
 
-  proceed(request: ReviRequest): ReviResponse {
+  proceed(request: ReviRequest): ResponseHandler {
     if (!request) {
       throw new Error("Request in interceptor chain must not be null.");
     }
@@ -52,8 +52,8 @@ export class RealInterceptorChain implements Chain {
       request
     );
     let interceptor: Interceptor = this.interceptors[this.index];
-    let response: ReviResponse = interceptor.intercept(next);
-    if (this.index + 1 < this.interceptors.length && next.calls != 1) {
+    let handler: ResponseHandler = interceptor.intercept(next);
+    if (this.index + 1 < this.interceptors.length && next.calls !== 1) {
       throw Error(
         "Revival interceptor " +
           interceptor +
@@ -61,6 +61,6 @@ export class RealInterceptorChain implements Chain {
       );
     }
 
-    return response;
+    return handler;
   }
 }

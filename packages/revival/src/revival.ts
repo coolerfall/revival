@@ -17,6 +17,9 @@ import { ReviRequest } from "./request";
 import { ReviResponse } from "./response";
 import { checkNotNull } from "./utils";
 
+/**
+ * Revival will turns all decorators in api class to http request.
+ */
 export class Revival {
   constructor(
     private readonly baseUrl: string,
@@ -102,14 +105,6 @@ class RevivalCall<T> implements Call<T> {
 
   request(): ReviRequest {
     return this.originRequest;
-  }
-
-  execute(): ReviResponse {
-    let response: ReviResponse = this.callFactory
-      .newCall(this.originRequest)
-      .execute();
-
-    return this.parseResponse(response);
   }
 
   enqueue(

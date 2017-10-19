@@ -38,7 +38,7 @@ let revival: Revival = new RevivalBuilder()
 let myapi = revival.create(MyApi);
 ```
 
-* Then you can call the api with synchronous(with execute) or asynchronous(with enqueue):
+* Then you can call the api with asynchronous(with enqueue):
 ```typescript
 let Call<Account> = myapi.loadAccount("Vincent");
 ```
