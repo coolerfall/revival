@@ -11,7 +11,7 @@ export { Converter, ConverterFactory } from "./Converter";
 export { Chain, Interceptor } from "./interceptor";
 export { RevivalHeaders } from "./headers";
 export { ReviRequest } from "./request";
-export { ReviResponse, ResponseHandler } from "./response";
+export { ResponseBuilder, ReviResponse, ResponseHandler } from "./response";
 export { Revival, RevivalBuilder } from "./revival";
 export {
   GET,

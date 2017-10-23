@@ -13,7 +13,8 @@ import {
   HttpError,
   ReviResponse,
   ResponseHandler,
-  RevivalResponseHandler
+  HttpHandler,
+  ResponseBuilder
 } from "./response";
 
 /**
@@ -33,18 +34,18 @@ export class XhrCall implements Call<any> {
     onResponse?: (response: ReviResponse) => void,
     onFailure?: (error: any) => void
   ): void {
-    this.getResponseWithInterceptors().enqueue(
-      response => {
+    try {
+      this.getResponseWithInterceptors().subscribe(response => {
         if (onResponse) {
           onResponse(response);
         }
-      },
-      error => {
-        if (onFailure) {
-          onFailure(error);
-        }
+        return response;
+      });
+    } catch (e) {
+      if (onFailure) {
+        onFailure(e);
       }
-    );
+    }
   }
 
   cancel(): void {}
@@ -64,7 +65,7 @@ export class XhrCall implements Call<any> {
 }
 
 /**
- * This is the final {@link Interceptor} to call server and get response.
+ * This is the final {@link Interceptor} to call server and get callback.
  */
 class CallServerInterceptor implements Interceptor {
   intercept(chain: Chain): ResponseHandler {
@@ -86,14 +87,14 @@ class CallServerInterceptor implements Interceptor {
       xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
     }
 
-    let handler = new RevivalResponseHandler();
+    let handler = new HttpHandler();
 
     xhr.addEventListener("load", () => {
       if (xhr.readyState === 4) {
         let status = xhr.status;
         let ok: boolean = false;
         if (status < 200 || status >= 300) {
-          handler.handleError(new HttpError(xhr.statusText || "Unkown Error"));
+          throw new HttpError(xhr.statusText || "Unkown Error");
         } else {
           ok = true;
         }
@@ -101,18 +102,18 @@ class CallServerInterceptor implements Interceptor {
         let response: any =
           typeof xhr.response === "undefined" ? xhr.responseText : xhr.response;
 
-        let realResponse: ReviResponse = {
-          ok: ok,
-          code: xhr.status,
-          url: xhr.responseURL || request.url,
-          body: response,
-          headers: new RevivalHeaders(xhr.getAllResponseHeaders())
-        };
-        handler.handleResponse(realResponse);
+        let realResponse: ReviResponse = new ResponseBuilder()
+          .ok(ok)
+          .code(status)
+          .url(xhr.responseURL || request.url)
+          .body(response)
+          .headers(new RevivalHeaders(xhr.getAllResponseHeaders()))
+          .build();
+        handler.next(realResponse);
       }
     });
     xhr.addEventListener("error", (event: ErrorEvent) => {
-      handler.handleError(event.error);
+      throw new HttpError(event.error);
     });
     xhr.send(request.params);
 

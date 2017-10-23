@@ -11,8 +11,8 @@ import { ReviResponse } from "./response";
 import { ReviRequest } from "./request";
 
 /**
- * A call which sends a request to server and returns response. Calls may be executed
- * synchronously with {@link execute}, or asynchronously with {@link enqueue}.
+ * A call which sends a request to server and returns callback. Calls may be executed
+ * asynchronously with {@link enqueue}.
  */
 export interface Call<T> {
   request(): ReviRequest;
