@@ -28,11 +28,11 @@ export class RealInterceptorChain implements Chain {
   constructor(
     private readonly interceptors: Array<Interceptor>,
     private readonly index: number,
-    private readonly pureRequest: ReviRequest
+    private readonly originRequest: ReviRequest
   ) {}
 
   request(): ReviRequest {
-    return this.pureRequest;
+    return this.originRequest;
   }
 
   proceed(request: ReviRequest): ResponseHandler {

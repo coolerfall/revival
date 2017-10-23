@@ -108,7 +108,7 @@ createPassword(@Body password: Password) : Call<ReviResponse> {
 }
 ```
 
-* Revival supports call adapter  which will turn `Call` to rxjs, promise. Check [adapter-rxjs](./packages/revival-adapter-rxjs/) 
+* Revival supports call adapter which will turn `Call` to rxjs, promise. Check [adapter-rxjs](../revival-adapter-rxjs/)  and [adapter-promise](../revival-adapter-promise/)
 
 
 Credits

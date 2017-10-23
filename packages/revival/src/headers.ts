@@ -145,6 +145,20 @@ export class RevivalHeaders {
   }
 
   /**
+   * Clone a new {@link RevivalHeaders}.
+   *
+   * @returns {@link RevivalHeaders}
+   */
+  clone(): RevivalHeaders {
+    let clone = new RevivalHeaders();
+    this.forEach((name: string, values: string | string[]) => {
+      clone.set(name, values);
+    });
+
+    return clone;
+  }
+
+  /**
    * Performs the specified action for each element in current headers.
    *
    * @param callbackfn calls the callbackfn function one time
