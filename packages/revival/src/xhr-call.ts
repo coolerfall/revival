@@ -11,10 +11,10 @@ import { ReviRequest } from "./request";
 import { RevivalHeaders } from "./headers";
 import {
   HttpError,
-  ReviResponse,
-  ResponseHandler,
   HttpHandler,
-  ResponseBuilder
+  ResponseBuilder,
+  ResponseHandler,
+  ReviResponse
 } from "./response";
 
 /**
@@ -35,12 +35,14 @@ export class XhrCall implements Call<any> {
     onFailure?: (error: any) => void
   ): void {
     try {
-      this.getResponseWithInterceptors().subscribe(response => {
-        if (onResponse) {
-          onResponse(response);
+      (this.getResponseWithInterceptors() as HttpHandler).subscribe(
+        response => {
+          if (onResponse) {
+            onResponse(response);
+          }
+          return response;
         }
-        return response;
-      });
+      );
     } catch (e) {
       if (onFailure) {
         onFailure(e);
@@ -113,7 +115,7 @@ class CallServerInterceptor implements Interceptor {
       }
     });
     xhr.addEventListener("error", (event: ErrorEvent) => {
-      throw new HttpError(event.error);
+      throw new HttpError(event.error || "Unkown Error");
     });
     xhr.send(request.params);
 

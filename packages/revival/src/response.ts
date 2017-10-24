@@ -95,15 +95,13 @@ export class ResponseBuilder {
 
 export interface ResponseHandler {
   handle(handler: (response: ReviResponse) => ReviResponse): ResponseHandler;
-
-  subscribe(onResponse: (response: ReviResponse) => void): void;
 }
 
 export class HttpHandler implements ResponseHandler {
   private nextHandler: HttpHandler;
   private handler: (response: ReviResponse) => ReviResponse;
   private onResponse: (response: ReviResponse) => void;
-  private calls: number;
+  private calls: number = 0;
 
   /**
    * Handle response in callback, and return the modified response or the origin response.
