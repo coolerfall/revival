@@ -47,10 +47,7 @@ export class RequestBuilder {
     private readonly returnRaw: boolean,
     private readonly args: Array<any>
   ) {
-    this.isQuery =
-      method === Method.GET ||
-      method === Method.DELETE ||
-      method === Method.HEAD;
+    this.isQuery = method === Method.GET || method === Method.DELETE || method === Method.HEAD;
 
     if (this.isMultiPart) {
       this.contentType = "multipart/form-data";
@@ -84,9 +81,7 @@ export class RequestBuilder {
     headers.forEach(header => {
       let colon = header.indexOf(":");
       if (colon === -1 || colon === 0 || colon === header.length - 1) {
-        throw Error(
-          `@Headers value must be in the form \"Name: Value\". Found: ${header}`
-        );
+        throw new Error(`@Headers value must be in the form \"Name: Value\". Found: ${header}`);
       }
 
       let headerName = header.substring(0, colon);
@@ -123,9 +118,7 @@ export class RequestBuilder {
       return this;
     }
 
-    this.params = this.revival
-      .serializer()
-      .convert(this.parseParameter(bodyArray));
+    this.params = this.revival.serializer().convert(this.parseParameter(bodyArray));
 
     return this;
   }
@@ -167,7 +160,7 @@ export class RequestBuilder {
         if (key) {
           let value: any = this.args[param.index];
           if (this.isQuery && value instanceof Object) {
-            throw Error("Query parameters should not be object.");
+            throw new Error("Query parameters should not be object.");
           }
           params[key] = value;
         } else {

@@ -7,7 +7,7 @@
 
 export function checkNotNull<T>(value: T, message: string): T {
   if (!value) {
-    throw Error(message);
+    throw new Error(message);
   }
 
   return value;
