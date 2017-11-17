@@ -6,7 +6,7 @@
  */
 
 export function checkNotNull<T>(value: T, message: string): T {
-  if (!value) {
+  if (value === null || value === undefined) {
     throw new Error(message);
   }
 
