@@ -18,7 +18,7 @@ export function methodDecorator(method: Method, path: string) {
     descriptor.value = function(...args: any[]) {
       let revival: Revival = target["Api_Revival"];
       if (!revival) {
-        throw new Error("Api should be created by Rxfetch.create(ApiClazz).");
+        throw new Error("Api should be created by Revival.create(ApiClazz).");
       }
 
       let isMultiPart: boolean = target[`${propertyKey}_MultiPart`];

@@ -7,6 +7,9 @@
 
 import { RevivalHeaders } from "./headers";
 
+/**
+ * Revival response returned by http server.
+ */
 export class ReviResponse {
   readonly ok: boolean;
   readonly code: number;
@@ -27,6 +30,9 @@ export class ReviResponse {
   }
 }
 
+/**
+ * A builder to build {@link ReviResponse}.
+ */
 export class ResponseBuilder {
   $ok: boolean;
   $code: number;

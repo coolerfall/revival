@@ -15,6 +15,8 @@ or
 yarn add revival
 ```
 
+* Add `"experimentalDecorators": true` and `"emitDecoratorMetadata": true` in `tsconfig.json`.
+
 * Create api in your project as below:
 
 ```typescript
