@@ -37,10 +37,15 @@ export class XhrCall implements Call<any> {
     try {
       (this.getResponseWithInterceptors() as HttpHandler).subscribe(
         response => {
-          if (onResponse) {
-            onResponse(response);
+          if (response.code < 200 || response.code >= 300) {
+            if (onFailure) {
+              onFailure(new HttpError(response));
+            }
+          } else {
+            if (onResponse) {
+              onResponse(response);
+            }
           }
-          return response;
         }
       );
     } catch (e) {
@@ -80,6 +85,11 @@ class CallServerInterceptor implements Interceptor {
     if (request.withCredentials) {
       xhr.withCredentials = true;
     }
+
+    if (!(request.headers instanceof RevivalHeaders)) {
+      throw new Error("The headers in request must bt 'RevivalHeaders'");
+    }
+
     /* add all headers */
     request.headers.forEach((name, values) => {
       xhr.setRequestHeader(name, values.join(","));
@@ -88,37 +98,45 @@ class CallServerInterceptor implements Interceptor {
     if (!request.headers.has("Accept")) {
       xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
     }
+    if (!request.headers.has("Content-Type")) {
+      let contentType = "text/plain";
+      if (typeof request.params !== "string") {
+        contentType = "application/json; charset=utf-8";
+      }
+      xhr.setRequestHeader("Content-Type", contentType);
+    }
 
     let handler = new HttpHandler();
 
     xhr.addEventListener("load", () => {
       if (xhr.readyState === 4) {
-        let status = xhr.status;
-        let ok: boolean = false;
-        if (status < 200 || status >= 300) {
-          throw new HttpError(xhr.statusText || "Unkown Error");
-        } else {
-          ok = true;
-        }
-
-        let response: any =
-          typeof xhr.response === "undefined" ? xhr.responseText : xhr.response;
-
-        let realResponse: ReviResponse = new ResponseBuilder()
-          .ok(ok)
-          .code(status)
-          .url(xhr.responseURL || request.url)
-          .body(response)
-          .headers(new RevivalHeaders(xhr.getAllResponseHeaders()))
-          .build();
-        handler.next(realResponse);
+        let response = this.getResponse(request, xhr);
+        handler.next(response);
       }
     });
     xhr.addEventListener("error", (event: ErrorEvent) => {
-      throw new HttpError(event.error || "Unkown Error");
+      handler.next(this.getResponse(request, xhr));
     });
     xhr.send(request.params);
 
     return handler;
+  }
+
+  private getResponse(request: ReviRequest, xhr: XMLHttpRequest): ReviResponse {
+    let status = xhr.status;
+    let ok = !(status < 200 || status >= 300);
+
+    let response: any =
+      typeof xhr.response === "undefined" ? xhr.responseText : xhr.response;
+
+    let revivalResponse: ReviResponse = new ResponseBuilder()
+      .ok(ok)
+      .code(status)
+      .url(xhr.responseURL || request.url)
+      .body(response)
+      .headers(new RevivalHeaders(xhr.getAllResponseHeaders()))
+      .build();
+
+    return revivalResponse;
   }
 }

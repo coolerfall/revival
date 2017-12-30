@@ -146,5 +146,5 @@ export class HttpHandler implements ResponseHandler {
 }
 
 export class HttpError {
-  constructor(public readonly errorMsg: string) {}
+  constructor(public readonly response: ReviResponse) {}
 }

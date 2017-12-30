@@ -123,15 +123,18 @@ export class RequestBuilder {
       return this;
     }
 
-    this.params = this.revival
-      .serializer()
-      .convert(this.parseParameter(bodyArray));
+    let parsedParams = this.parseParameter(bodyArray);
+    if (this.isFormUrlEncoded) {
+      this.params = qs.stringify(parsedParams);
+    } else {
+      this.params = this.revival.serializer().convert(parsedParams);
+    }
 
     return this;
   }
 
   addPart(partArray: Array<object>): RequestBuilder {
-    if (this.isQuery || partArray.length === 0 || !this.isFormUrlEncoded) {
+    if (this.isQuery || partArray.length === 0 || !this.isMultiPart) {
       return this;
     }
 
