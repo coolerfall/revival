@@ -45,6 +45,7 @@ export class RequestBuilder {
     private readonly isMultiPart: boolean,
     private readonly isFormUrlEncoded: boolean,
     private readonly returnRaw: boolean,
+    private readonly withCredentials: boolean,
     private readonly args: Array<any>
   ) {
     this.isQuery =
@@ -157,7 +158,8 @@ export class RequestBuilder {
       url: this.url,
       method: this.method,
       headers: this.headers,
-      params: this.params
+      params: this.params,
+      withCredentials: this.withCredentials
     };
   }
 

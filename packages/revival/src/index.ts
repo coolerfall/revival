@@ -35,6 +35,7 @@ export {
   Part,
   MultiPart,
   FormUrlEncoded,
-  Raw
+  Raw,
+  Credentials
 } from "./http/decorators";
 export { DUMMY } from "./dummy";
