@@ -24,12 +24,14 @@ export function methodDecorator(method: Method, path: string) {
       let isMultiPart: boolean = target[`${propertyKey}_MultiPart`];
       let isFormUrlEncoded: boolean = target[`${propertyKey}_FormUrlEncoded`];
       let returnRaw: boolean = target[`${propertyKey}_Return_Raw`];
+      let withCredentials: boolean = target[`${propertyKey}_With_Credentials`];
       let builder: RequestBuilder = new RequestBuilder(
         revival,
         method,
         isMultiPart,
         isFormUrlEncoded,
         returnRaw,
+        withCredentials,
         args
       );
 

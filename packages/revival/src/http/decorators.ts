@@ -102,3 +102,12 @@ export function Raw(
   target[`${propertyKey}_Return_Raw`] = true;
   return descriptor;
 }
+
+export function Credentials(
+  target: any,
+  propertyKey: string,
+  descriptor: TypedPropertyDescriptor<any>
+) {
+  target[`${propertyKey}_With_Credentials`] = true;
+  return descriptor;
+}
