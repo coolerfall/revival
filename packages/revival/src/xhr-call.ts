@@ -98,13 +98,6 @@ class CallServerInterceptor implements Interceptor {
     if (!request.headers.has("Accept")) {
       xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
     }
-    if (!request.headers.has("Content-Type")) {
-      let contentType = "text/plain";
-      if (typeof request.params !== "string") {
-        contentType = "application/json; charset=utf-8";
-      }
-      xhr.setRequestHeader("Content-Type", contentType);
-    }
 
     let handler = new HttpHandler();
 
