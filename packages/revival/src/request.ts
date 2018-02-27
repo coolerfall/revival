@@ -154,6 +154,14 @@ export class RequestBuilder {
   }
 
   build(): ReviRequest {
+    if (!this.headers.has("Content-Type")) {
+      let contentType = "text/plain";
+      if (!this.isQuery) {
+        contentType = "application/json; charset=utf-8";
+      }
+      this.headers.set("Content-Type", contentType);
+    }
+
     return {
       url: this.url,
       method: this.method,
