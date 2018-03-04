@@ -23,7 +23,7 @@ export interface CallAdapter<T> {
  */
 export class DefaultCallAdapter implements CallAdapter<Call<any>> {
   check(returnType: any): boolean {
-    return returnType === Object.prototype;
+    return returnType.prototype === Object.prototype;
   }
 
   adapt(call: Call<any>, returnRaw: boolean): Call<any> {
