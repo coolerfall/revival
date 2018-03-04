@@ -13,7 +13,7 @@ export class PromiseCallAdapter<T> implements CallAdapter<T> {
   }
 
   check(returnType: any): boolean {
-    return returnType === Promise.prototype;
+    return returnType.prototype === Promise.prototype;
   }
 
   adapt(call: Call<T>, returnRaw: boolean): any {
