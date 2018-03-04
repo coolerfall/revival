@@ -13,8 +13,8 @@ export class RxjsCallAdapter<T> implements CallAdapter<T> {
     return new RxjsCallAdapter();
   }
 
-  check(returnType: string): boolean {
-    return returnType === "Observable";
+  check(returnType: any): boolean {
+    return returnType === Observable.prototype;
   }
 
   adapt(call: Call<T>, returnRaw: boolean): any {

@@ -13,7 +13,7 @@ import { ReviResponse } from "./response";
  * Call adapter which will adapt response to another type.
  */
 export interface CallAdapter<T> {
-  check(returnType: string): boolean;
+  check(returnType: any): boolean;
 
   adapt(call: Call<T>, returnRaw: boolean): any;
 }
@@ -22,8 +22,8 @@ export interface CallAdapter<T> {
  * Default call adapter used in revival.
  */
 export class DefaultCallAdapter implements CallAdapter<Call<any>> {
-  check(returnType: string): boolean {
-    return returnType === "Object";
+  check(returnType: any): boolean {
+    return returnType === Object.prototype;
   }
 
   adapt(call: Call<any>, returnRaw: boolean): Call<any> {
