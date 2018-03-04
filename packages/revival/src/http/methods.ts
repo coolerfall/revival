@@ -61,7 +61,7 @@ export function methodDecorator(method: Method, path: string) {
         propertyKey
       );
 
-      return revival.call(builder.build(), returnType.name, returnRaw);
+      return revival.call(builder.build(), returnType, returnRaw);
     };
 
     return descriptor;
