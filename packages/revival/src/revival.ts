@@ -55,7 +55,7 @@ export class Revival {
     return `${this.baseUrl}${path}`;
   }
 
-  private callAdapter(returnType: string): CallAdapter<any> {
+  private callAdapter(returnType: any): CallAdapter<any> {
     for (let i = 0; i < this.callAdapters.length; i++) {
       let adapter: CallAdapter<any> = this.callAdapters[i];
       if (adapter.check(returnType)) {
@@ -85,7 +85,7 @@ export class Revival {
    * @param isRaw return raw callback or not
    * @returns adapted result
    */
-  call<T>(originRequest: ReviRequest, returnType: string, isRaw: boolean): any {
+  call<T>(originRequest: ReviRequest, returnType: any, isRaw: boolean): any {
     let revivalCall: RevivalCall<T> = new RevivalCall(
       originRequest,
       this.callFactory,

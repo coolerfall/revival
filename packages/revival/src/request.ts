@@ -174,7 +174,12 @@ export class RequestBuilder {
   private parseParameter(paramArray: Array<any>): object {
     let params: any = {};
     paramArray
-      .filter((param: { key: string; index: number }) => this.args[param.index])
+      .filter(
+        (param: { key: string; index: number }) =>
+          this.args.length > param.index &&
+          this.args[param.index] !== null &&
+          this.args[param.index] !== undefined
+      )
       .forEach((param: { key: string; index: number }) => {
         let key: string = param.key;
         if (key) {

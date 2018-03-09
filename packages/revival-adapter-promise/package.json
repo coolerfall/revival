@@ -1,6 +1,6 @@
 {
   "name": "revival-adapter-promise",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "An promise call adapter for revival.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
