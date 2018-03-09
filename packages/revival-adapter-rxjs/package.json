@@ -1,6 +1,6 @@
 {
   "name": "revival-adapter-rxjs",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "An rxjs call adapter for revival.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",

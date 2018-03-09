@@ -37,6 +37,7 @@ class TestApi {
   testGet(
     @Header("head1") header: string,
     @Query("string") query: string,
+    @Query("ints") ints: number,
     @Path("user") user: string,
     @Path("id") id: string,
     @QueryMap map: object
