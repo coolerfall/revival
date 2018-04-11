@@ -25,10 +25,10 @@ export class RxjsCallAdapter<T> implements CallAdapter<T> {
       try {
         call.enqueue(
           response => observer.next(returnRaw ? response : response.body),
-          error => Observable.throw(error)
+          error => observer.error(error)
         );
       } catch (e) {
-        return Observable.throw(e);
+        return observer.error(e);
       }
     });
   }
