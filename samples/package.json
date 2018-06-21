@@ -16,7 +16,7 @@
     "@types/qs": "6.5.0",
     "qs": "6.5.1",
     "revival": "file:../packages/revival/lib",
-    "rxjs": "5.4.3",
+    "rxjs": "6.2.1",
     "xml-js": "1.5.1"
   }
 }
