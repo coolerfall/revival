@@ -34,10 +34,10 @@ export interface ReviRequest {
  */
 export class RequestBuilder {
   private readonly headers: RevivalHeaders = new RevivalHeaders();
+  private readonly isQuery: boolean;
+  private readonly contentType: string;
   private url: string;
-  private isQuery: boolean;
   private params: any;
-  private contentType: string;
 
   constructor(
     private readonly revival: Revival,
@@ -53,9 +53,7 @@ export class RequestBuilder {
       method === Method.DELETE ||
       method === Method.HEAD;
 
-    if (this.isMultiPart) {
-      this.contentType = "multipart/form-data";
-    } else if (this.isFormUrlEncoded) {
+    if (this.isFormUrlEncoded) {
       this.contentType = "application/x-www-form-urlencoded";
     }
   }
@@ -154,7 +152,8 @@ export class RequestBuilder {
   }
 
   build(): ReviRequest {
-    if (!this.headers.has("Content-Type")) {
+    /* multipart donot need content type */
+    if (!this.headers.has("Content-Type") && !this.isMultiPart) {
       let contentType = "text/plain";
       if (!this.isQuery) {
         contentType = "application/json; charset=utf-8";
