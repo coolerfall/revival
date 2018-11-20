@@ -1,0 +1,30 @@
+{
+  "name": "revival-test",
+  "private": true,
+  "description": "Tests for revival.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coolerfall/revival.git"
+  },
+  "keywords": [
+    "revival",
+    "samples"
+  ],
+  "author": "Vincent Cheung",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chai": "4.1.7",
+    "@types/mocha": "5.2.5",
+    "@types/qs": "6.5.1",
+    "@types/sinon": "5.0.6",
+    "chai": "4.2.0",
+    "mocha": "5.2.0",
+    "qs": "6.5.2",
+    "revival": "file:../packages/revival/lib",
+    "rxjs": "6.3.3",
+    "sinon": "7.1.1",
+    "ts-node": "7.0.1",
+    "typescript": "3.1.6",
+    "xml-js": "1.5.1"
+  }
+}

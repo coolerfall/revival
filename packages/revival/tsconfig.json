@@ -9,7 +9,8 @@
     "noImplicitAny": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "declaration": true
+    "declaration": true,
+    "strictPropertyInitialization": false
   },
   "formatCodeOptions": {
     "indentSize": 2,

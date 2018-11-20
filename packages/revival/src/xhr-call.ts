@@ -107,7 +107,7 @@ class CallServerInterceptor implements Interceptor {
         handler.next(response);
       }
     });
-    xhr.addEventListener("error", (event: ErrorEvent) => {
+    xhr.addEventListener("error", () => {
       handler.next(this.getResponse(request, xhr));
     });
     xhr.send(request.params);
