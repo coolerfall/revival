@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "rm -rf packages/*/lib && lerna exec -- npm run build",
-    "publish": "npm run build && lerna publish --skip-git --force-publish=*",
+    "publish": "npm run build && lerna publish --no-git-tag-version --no-push --force-publish=*",
     "test": "mocha -r ts-node/register test/revival.test.ts"
   },
   "repository": {
@@ -17,18 +17,5 @@
     "typescript"
   ],
   "author": "Vincent Cheung",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/chai": "4.0.4",
-    "@types/mocha": "2.2.43",
-    "@types/qs": "6.5.0",
-    "@types/sinon": "2.3.5",
-    "chai": "4.1.2",
-    "mocha": "3.5.3",
-    "qs": "6.5.0",
-    "rxjs": "5.4.3",
-    "sinon": "3.3.0",
-    "ts-node": "3.3.0",
-    "typescript": "2.5.2"
-  }
+  "license": "MIT"
 }

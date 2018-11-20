@@ -23,18 +23,14 @@ export class LogInterceptor implements Interceptor {
     let handler: ResponseHandler;
     try {
       handler = chain.proceed(request);
-      handler.enqueue(
-        response => {
-          this.logHeaders(response.headers);
-          if (response.body) {
-            console.log(response.body);
-          }
-          console.log(`--> END ${request.method} ${request.url}\n`);
-        },
-        error => {
-          console.error("<-- HTTP FAILED: ", error, "\n");
+      handler = handler.handle(response => {
+        this.logHeaders(response.headers);
+        if (response.body) {
+          console.log(response.body);
         }
-      );
+        console.log(`--> END ${request.method} ${request.url}\n`);
+        return response;
+      });
     } catch (e) {
       console.error("<-- HTTP FAILED: ", e, "\n");
       throw e;

@@ -28,11 +28,11 @@ export class RealInterceptorChain implements Chain {
   constructor(
     private readonly interceptors: Array<Interceptor>,
     private readonly index: number,
-    private readonly pureRequest: ReviRequest
+    private readonly originRequest: ReviRequest
   ) {}
 
   request(): ReviRequest {
-    return this.pureRequest;
+    return this.originRequest;
   }
 
   proceed(request: ReviRequest): ResponseHandler {
@@ -54,11 +54,7 @@ export class RealInterceptorChain implements Chain {
     let interceptor: Interceptor = this.interceptors[this.index];
     let handler: ResponseHandler = interceptor.intercept(next);
     if (this.index + 1 < this.interceptors.length && next.calls !== 1) {
-      throw Error(
-        "Revival interceptor " +
-          interceptor +
-          " must call proceed() exactly once."
-      );
+      throw new Error("Revival interceptor " + interceptor + " must call proceed() exactly once.");
     }
 
     return handler;

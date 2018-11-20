@@ -18,18 +18,20 @@ export function methodDecorator(method: Method, path: string) {
     descriptor.value = function(...args: any[]) {
       let revival: Revival = target["Api_Revival"];
       if (!revival) {
-        throw new Error("Api should be created by Rxfetch.create(ApiClazz).");
+        throw new Error("Api should be created by Revival.create(ApiClazz).");
       }
 
       let isMultiPart: boolean = target[`${propertyKey}_MultiPart`];
       let isFormUrlEncoded: boolean = target[`${propertyKey}_FormUrlEncoded`];
       let returnRaw: boolean = target[`${propertyKey}_Return_Raw`];
+      let withCredentials: boolean = target[`${propertyKey}_With_Credentials`];
       let builder: RequestBuilder = new RequestBuilder(
         revival,
         method,
         isMultiPart,
         isFormUrlEncoded,
         returnRaw,
+        withCredentials,
         args
       );
 
@@ -48,7 +50,7 @@ export function methodDecorator(method: Method, path: string) {
 
       builder
         .addPath(path, pathArray)
-        .addHeader(headerArray, target[`${propertyKey}_Headers`])
+        .addHeader(headerArray, target[`${propertyKey}_Headers`] || [])
         .addQuery(queryArray)
         .addBody(bodyArray)
         .addPart(partArray);
@@ -59,7 +61,7 @@ export function methodDecorator(method: Method, path: string) {
         propertyKey
       );
 
-      return revival.call(builder.build(), returnType.name, returnRaw);
+      return revival.call(builder.build(), returnType, returnRaw);
     };
 
     return descriptor;

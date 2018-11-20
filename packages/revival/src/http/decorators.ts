@@ -37,7 +37,7 @@ export function Header(key: string) {
   return parameterDecorator("Header", key);
 }
 
-export function Headers(headers: object) {
+export function Headers(headers: string[]) {
   return function(
     target: any,
     propertyKey: string,
@@ -100,5 +100,14 @@ export function Raw(
   descriptor: TypedPropertyDescriptor<any>
 ) {
   target[`${propertyKey}_Return_Raw`] = true;
+  return descriptor;
+}
+
+export function Credentials(
+  target: any,
+  propertyKey: string,
+  descriptor: TypedPropertyDescriptor<any>
+) {
+  target[`${propertyKey}_With_Credentials`] = true;
   return descriptor;
 }

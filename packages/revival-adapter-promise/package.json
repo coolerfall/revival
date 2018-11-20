@@ -1,6 +1,6 @@
 {
   "name": "revival-adapter-promise",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "An promise call adapter for revival.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -21,8 +21,8 @@
     "revival": "*"
   },
   "devDependencies": {
-    "@types/qs": "6.5.0",
-    "qs": "6.5.1",
+    "@types/qs": "6.5.1",
+    "qs": "6.5.2",
     "revival": "file:../revival/lib"
   }
 }

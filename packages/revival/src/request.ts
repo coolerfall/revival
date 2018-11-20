@@ -34,10 +34,10 @@ export interface ReviRequest {
  */
 export class RequestBuilder {
   private readonly headers: RevivalHeaders = new RevivalHeaders();
+  private readonly isQuery: boolean;
+  private readonly contentType: string;
   private url: string;
-  private isQuery: boolean;
   private params: any;
-  private contentType: string;
 
   constructor(
     private readonly revival: Revival,
@@ -45,6 +45,7 @@ export class RequestBuilder {
     private readonly isMultiPart: boolean,
     private readonly isFormUrlEncoded: boolean,
     private readonly returnRaw: boolean,
+    private readonly withCredentials: boolean,
     private readonly args: Array<any>
   ) {
     this.isQuery =
@@ -52,9 +53,7 @@ export class RequestBuilder {
       method === Method.DELETE ||
       method === Method.HEAD;
 
-    if (this.isMultiPart) {
-      this.contentType = "multipart/form-data";
-    } else if (this.isFormUrlEncoded) {
+    if (this.isFormUrlEncoded) {
       this.contentType = "application/x-www-form-urlencoded";
     }
   }
@@ -72,7 +71,7 @@ export class RequestBuilder {
     return this;
   }
 
-  addHeader(headerArray: Array<object>, headers: any): RequestBuilder {
+  addHeader(headerArray: Array<object>, headers: string[]): RequestBuilder {
     if (!this.returnRaw) {
       this.headers.append("Accept", "application/json");
     }
@@ -81,11 +80,18 @@ export class RequestBuilder {
       this.headers.append("Content-Type", this.contentType);
     }
 
-    for (let key in headers) {
-      if (headers.hasOwnProperty(key)) {
-        this.headers.append(key, headers[key]);
+    headers.forEach(header => {
+      let colon = header.indexOf(":");
+      if (colon === -1 || colon === 0 || colon === header.length - 1) {
+        throw new Error(
+          `@Headers value must be in the form \"Name: Value\". Found: ${header}`
+        );
       }
-    }
+
+      let headerName = header.substring(0, colon);
+      let headerValue = header.substring(colon + 1).trim();
+      this.headers.set(headerName, headerValue);
+    });
 
     let overrideHeaders: any = this.parseParameter(headerArray);
     for (let key in overrideHeaders) {
@@ -116,15 +122,18 @@ export class RequestBuilder {
       return this;
     }
 
-    this.params = this.revival
-      .serializer()
-      .convert(this.parseParameter(bodyArray));
+    let parsedParams = this.parseParameter(bodyArray);
+    if (this.isFormUrlEncoded) {
+      this.params = qs.stringify(parsedParams);
+    } else {
+      this.params = this.revival.serializer().convert(parsedParams);
+    }
 
     return this;
   }
 
   addPart(partArray: Array<object>): RequestBuilder {
-    if (this.isQuery || partArray.length === 0 || !this.isFormUrlEncoded) {
+    if (this.isQuery || partArray.length === 0 || !this.isMultiPart) {
       return this;
     }
 
@@ -143,24 +152,39 @@ export class RequestBuilder {
   }
 
   build(): ReviRequest {
+    /* multipart donot need content type */
+    if (!this.headers.has("Content-Type") && !this.isMultiPart) {
+      let contentType = "text/plain";
+      if (!this.isQuery) {
+        contentType = "application/json; charset=utf-8";
+      }
+      this.headers.set("Content-Type", contentType);
+    }
+
     return {
       url: this.url,
       method: this.method,
       headers: this.headers,
-      params: this.params
+      params: this.params,
+      withCredentials: this.withCredentials
     };
   }
 
   private parseParameter(paramArray: Array<any>): object {
     let params: any = {};
     paramArray
-      .filter((param: { key: string; index: number }) => this.args[param.index])
+      .filter(
+        (param: { key: string; index: number }) =>
+          this.args.length > param.index &&
+          this.args[param.index] !== null &&
+          this.args[param.index] !== undefined
+      )
       .forEach((param: { key: string; index: number }) => {
         let key: string = param.key;
         if (key) {
           let value: any = this.args[param.index];
           if (this.isQuery && value instanceof Object) {
-            throw Error("Query parameters should not be object.");
+            throw new Error("Query parameters should not be object.");
           }
           params[key] = value;
         } else {

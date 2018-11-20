@@ -33,7 +33,7 @@ describe("Revival", () => {
       "http://test.com/test/get/VC/24?test1=2&test2=yes&string=1111",
       [200, { "Content-Type": "application/json" }, `{ "id": 123 }`]
     );
-    TestApi.testGet("testHeader", "1111", "VC", "24", {
+    TestApi.testGet("testHeader", "this is string", 0, "VC", "24", {
       test1: 2,
       test2: "yes"
     }).enqueue(

@@ -15,14 +15,14 @@ import {
   Query,
   QueryMap,
   Raw
-} from "../packages/revival/src/http/decorators";
-import { Observable } from "rxjs/Observable";
-import { DUMMY } from "../packages/revival/src/dummy";
-import { Revival, RevivalBuilder } from "../packages/revival/src/revival";
+} from "../packages/revival/src";
+import { DUMMY } from "../packages/revival/src";
+import { Revival, RevivalBuilder } from "../packages/revival/src";
 import { LogInterceptor } from "../samples/src/RevivalLogInterceptor";
-import { RxjsCallAdapter } from "../packages/revival-adapter-rxjs/src/rxjs-call-adapter";
-import { PromiseCallAdapter } from "../packages/revival-adapter-promise/src/promise-call-adapter";
-import { Call } from "../packages/revival/src/call";
+import { RxjsCallAdapter } from "../packages/revival-adapter-rxjs/src";
+import { PromiseCallAdapter } from "../packages/revival-adapter-promise/src";
+import { Call } from "../packages/revival/src";
+import { Observable } from "rxjs";
 
 let revival: Revival = new RevivalBuilder()
   .baseUrl("http://test.com/")
@@ -37,6 +37,7 @@ class TestApi {
   testGet(
     @Header("head1") header: string,
     @Query("string") query: string,
+    @Query("ints") ints: number,
     @Path("user") user: string,
     @Path("id") id: string,
     @QueryMap map: object
@@ -61,7 +62,7 @@ class TestApi {
     return DUMMY;
   }
 
-  @Headers({ header1: 8, header2: "This" })
+  @Headers(["header1: 8", "header2: This"])
   @GET("test/headers")
   testHeaders(): Observable<any> {
     return DUMMY;

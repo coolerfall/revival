@@ -7,11 +7,16 @@
 
 export { Call, CallFactory } from "./call";
 export { CallAdapter } from "./call-adapter";
-export { Converter, ConverterFactory } from "./Converter";
+export { Converter, ConverterFactory } from "./converter";
 export { Chain, Interceptor } from "./interceptor";
 export { RevivalHeaders } from "./headers";
 export { ReviRequest } from "./request";
-export { ReviResponse, ResponseHandler } from "./response";
+export {
+  ResponseBuilder,
+  ReviResponse,
+  ResponseHandler,
+  HttpError
+} from "./response";
 export { Revival, RevivalBuilder } from "./revival";
 export {
   GET,
@@ -30,6 +35,7 @@ export {
   Part,
   MultiPart,
   FormUrlEncoded,
-  Raw
+  Raw,
+  Credentials
 } from "./http/decorators";
 export { DUMMY } from "./dummy";

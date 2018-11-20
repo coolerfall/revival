@@ -1,6 +1,6 @@
 {
   "name": "revival",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "A RESTful http client for react native and typecript.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -22,11 +22,10 @@
     "qs": "*"
   },
   "dependencies": {
-    "reflect-metadata": "0.1.10"
+    "reflect-metadata": "0.1.12"
   },
   "devDependencies": {
-    "@types/qs": "6.5.0",
-    "qs": "6.5.1",
-    "rxjs": "5.4.3"
+    "@types/qs": "6.5.1",
+    "qs": "6.5.2"
   }
 }

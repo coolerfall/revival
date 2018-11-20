@@ -8,7 +8,8 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
     "experimentalDecorators": true,
-    "declaration": true
+    "declaration": true,
+    "inlineSourceMap": false
   },
   "exclude": [
     "android",

@@ -11,9 +11,10 @@ import { ReviRequest } from "./request";
 import { RevivalHeaders } from "./headers";
 import {
   HttpError,
-  ReviResponse,
+  HttpHandler,
+  ResponseBuilder,
   ResponseHandler,
-  RevivalResponseHandler
+  ReviResponse
 } from "./response";
 
 /**
@@ -33,30 +34,25 @@ export class XhrCall implements Call<any> {
     onResponse?: (response: ReviResponse) => void,
     onFailure?: (error: any) => void
   ): void {
-    let handler = this.getResponseWithInterceptors();
-    let responseHandler = handler.responseHandler();
-    let failureHandler = handler.falureHandler();
-
-    handler.enqueue(
-      response => {
-        if (responseHandler) {
-          responseHandler(response);
+    try {
+      (this.getResponseWithInterceptors() as HttpHandler).subscribe(
+        response => {
+          if (response.code < 200 || response.code >= 300) {
+            if (onFailure) {
+              onFailure(new HttpError(response));
+            }
+          } else {
+            if (onResponse) {
+              onResponse(response);
+            }
+          }
         }
-
-        if (onResponse) {
-          onResponse(response);
-        }
-      },
-      error => {
-        if (failureHandler) {
-          failureHandler(error);
-        }
-
-        if (onFailure) {
-          onFailure(error);
-        }
+      );
+    } catch (e) {
+      if (onFailure) {
+        onFailure(e);
       }
-    );
+    }
   }
 
   cancel(): void {}
@@ -76,7 +72,7 @@ export class XhrCall implements Call<any> {
 }
 
 /**
- * This is the final {@link Interceptor} to call server and get response.
+ * This is the final {@link Interceptor} to call server and get callback.
  */
 class CallServerInterceptor implements Interceptor {
   intercept(chain: Chain): ResponseHandler {
@@ -89,6 +85,11 @@ class CallServerInterceptor implements Interceptor {
     if (request.withCredentials) {
       xhr.withCredentials = true;
     }
+
+    if (!(request.headers instanceof RevivalHeaders)) {
+      throw new Error("The headers in request must bt 'RevivalHeaders'");
+    }
+
     /* add all headers */
     request.headers.forEach((name, values) => {
       xhr.setRequestHeader(name, values.join(","));
@@ -98,31 +99,37 @@ class CallServerInterceptor implements Interceptor {
       xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
     }
 
-    let handler = new RevivalResponseHandler();
+    let handler = new HttpHandler();
 
     xhr.addEventListener("load", () => {
       if (xhr.readyState === 4) {
-        if (xhr.status < 200 || xhr.status >= 300) {
-          handler.handleError(new HttpError(xhr.statusText || "Unkown Error"));
-        }
-
-        let response: any =
-          typeof xhr.response === "undefined" ? xhr.responseText : xhr.response;
-
-        let realResponse: ReviResponse = {
-          code: xhr.status,
-          url: xhr.responseURL || request.url,
-          body: response,
-          headers: new RevivalHeaders(xhr.getAllResponseHeaders())
-        };
-        handler.handleResponse(realResponse);
+        let response = this.getResponse(request, xhr);
+        handler.next(response);
       }
     });
-    xhr.addEventListener("error", (event: ErrorEvent) => {
-      handler.handleError(event.error);
+    xhr.addEventListener("error", () => {
+      handler.next(this.getResponse(request, xhr));
     });
     xhr.send(request.params);
 
     return handler;
+  }
+
+  private getResponse(request: ReviRequest, xhr: XMLHttpRequest): ReviResponse {
+    let status = xhr.status;
+    let ok = !(status < 200 || status >= 300);
+
+    let response: any =
+      typeof xhr.response === "undefined" ? xhr.responseText : xhr.response;
+
+    let revivalResponse: ReviResponse = new ResponseBuilder()
+      .ok(ok)
+      .code(status)
+      .url(xhr.responseURL || request.url)
+      .body(response)
+      .headers(new RevivalHeaders(xhr.getAllResponseHeaders()))
+      .build();
+
+    return revivalResponse;
   }
 }

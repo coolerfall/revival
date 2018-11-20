@@ -13,8 +13,11 @@ export class RxjsCallAdapter<T> implements CallAdapter<T> {
     return new RxjsCallAdapter();
   }
 
-  check(returnType: string): boolean {
-    return returnType === "Observable";
+  check(returnType: any): boolean {
+    return (
+      returnType.prototype === Observable.prototype ||
+      returnType.name === Observable.name
+    );
   }
 
   adapt(call: Call<T>, returnRaw: boolean): any {
@@ -22,10 +25,10 @@ export class RxjsCallAdapter<T> implements CallAdapter<T> {
       try {
         call.enqueue(
           response => observer.next(returnRaw ? response : response.body),
-          error => Observable.throw(error)
+          error => observer.error(error)
         );
       } catch (e) {
-        return Observable.throw(e);
+        return observer.error(e);
       }
     });
   }

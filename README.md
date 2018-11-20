@@ -15,6 +15,8 @@ or
 yarn add revival
 ```
 
+* Add `"experimentalDecorators": true` and `"emitDecoratorMetadata": true` in `tsconfig.json`.
+
 * Create api in your project as below:
 
 ```typescript
@@ -38,7 +40,7 @@ let revival: Revival = new RevivalBuilder()
 let myapi = revival.create(MyApi);
 ```
 
-* Then you can call the api with asynchronous(with enqueue):
+* Then you can call the api with asynchronous mode(with enqueue):
 ```typescript
 let Call<Account> = myapi.loadAccount("Vincent");
 ```

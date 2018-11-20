@@ -55,7 +55,7 @@ export class Revival {
     return `${this.baseUrl}${path}`;
   }
 
-  private callAdapter(returnType: string): CallAdapter<any> {
+  private callAdapter(returnType: any): CallAdapter<any> {
     for (let i = 0; i < this.callAdapters.length; i++) {
       let adapter: CallAdapter<any> = this.callAdapters[i];
       if (adapter.check(returnType)) {
@@ -82,10 +82,10 @@ export class Revival {
    *
    * @param originRequest origin request
    * @param returnType return type
-   * @param isRaw return raw response or not
+   * @param isRaw return raw callback or not
    * @returns adapted result
    */
-  call<T>(originRequest: ReviRequest, returnType: string, isRaw: boolean): any {
+  call<T>(originRequest: ReviRequest, returnType: any, isRaw: boolean): any {
     let revivalCall: RevivalCall<T> = new RevivalCall(
       originRequest,
       this.callFactory,
@@ -97,6 +97,8 @@ export class Revival {
 }
 
 class RevivalCall<T> implements Call<T> {
+  private call: Call<any>;
+
   constructor(
     private readonly originRequest: ReviRequest,
     private readonly callFactory: CallFactory,
@@ -111,15 +113,20 @@ class RevivalCall<T> implements Call<T> {
     onResponse?: (response: ReviResponse) => void,
     onFailure?: (error: any) => void
   ): void {
-    this.callFactory
-      .newCall(this.originRequest)
-      .enqueue(
-        response => onResponse && onResponse(this.parseResponse(response)),
-        onFailure
-      );
+    this.call = this.callFactory.newCall(this.originRequest);
+    this.call.enqueue(
+      response => onResponse && onResponse(this.parseResponse(response)),
+      onFailure
+    );
   }
 
-  cancel(): void {}
+  cancel(): void {
+    if (!this.call) {
+      return;
+    }
+
+    this.call.cancel();
+  }
 
   private parseResponse(response: ReviResponse): ReviResponse {
     if (response.code === 204 || response.code === 205 || !response.body) {
@@ -136,19 +143,19 @@ class RevivalCall<T> implements Call<T> {
  * A builder to build a new {@link Revival}.
  */
 export class RevivalBuilder {
-  private revivalBaseUrl: string;
-  private revivalCallFactory: CallFactory;
+  private $baseUrl: string;
+  private $callFactory: CallFactory;
   private callAdapters: Array<CallAdapter<any>> = [];
-  private revivalConverterFactory: ConverterFactory = new BuiltInConverterFactory();
+  private $converterFactory: ConverterFactory = new BuiltInConverterFactory();
   private readonly interceptors: Array<Interceptor> = [];
 
   baseUrl(baseUrl: string): RevivalBuilder {
-    this.revivalBaseUrl = checkNotNull(baseUrl, "baseUrl is null or undefined");
+    this.$baseUrl = checkNotNull(baseUrl, "baseUrl is null or undefined");
     return this;
   }
 
   callFactory(callFactory: CallFactory): RevivalBuilder {
-    this.revivalCallFactory = checkNotNull(
+    this.$callFactory = checkNotNull(
       callFactory,
       "callFactory is null or undefined"
     );
@@ -163,7 +170,7 @@ export class RevivalBuilder {
   }
 
   converterFactory(converterFactory: ConverterFactory): RevivalBuilder {
-    this.revivalConverterFactory = checkNotNull(
+    this.$converterFactory = checkNotNull(
       converterFactory,
       "converterFactory is null or undefined"
     );
@@ -178,16 +185,16 @@ export class RevivalBuilder {
   }
 
   build(): Revival {
-    if (!this.revivalCallFactory) {
-      this.revivalCallFactory = new DefaultCallFactory(this.interceptors);
+    if (!this.$callFactory) {
+      this.$callFactory = new DefaultCallFactory(this.interceptors);
     }
     this.callAdapters.push(new DefaultCallAdapter());
 
     return new Revival(
-      this.revivalBaseUrl,
-      this.revivalCallFactory,
+      this.$baseUrl,
+      this.$callFactory,
       this.callAdapters,
-      this.revivalConverterFactory
+      this.$converterFactory
     );
   }
 }
