@@ -21,8 +21,8 @@
     "revival": "*"
   },
   "devDependencies": {
-    "@types/qs": "6.5.0",
-    "qs": "6.5.1",
+    "@types/qs": "6.5.1",
+    "qs": "6.5.2",
     "revival": "file:../revival/lib"
   }
 }

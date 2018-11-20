@@ -24,6 +24,6 @@
     "@types/qs": "6.5.1",
     "qs": "6.5.2",
     "revival": "file:../revival/lib",
-    "rxjs": "6.2.1"
+    "rxjs": "6.3.3"
   }
 }

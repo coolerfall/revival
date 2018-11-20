@@ -22,11 +22,10 @@
     "qs": "*"
   },
   "dependencies": {
-    "reflect-metadata": "0.1.10"
+    "reflect-metadata": "0.1.12"
   },
   "devDependencies": {
-    "@types/qs": "6.5.0",
-    "qs": "6.5.1",
-    "rxjs": "5.4.3"
+    "@types/qs": "6.5.1",
+    "qs": "6.5.2"
   }
 }
